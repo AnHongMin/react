@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="Todo">
+
+	<sql id="TODO_WHERE">
+  		<where>
+  		<if test="searchText != '' and searchText != null">
+  			text LIKE '%${searchText}%'
+		</if>
+  		</where>
+  	</sql>
+
+	<!-- 목록 총 카운트 -->
+	<select id="getTodoListCount" parameterType="com.mpc.todo.service.TodoVo" resultType="int">
+		SELECT
+			COUNT(*) CNT
+  		FROM TODO
+  		<include refid="TODO_WHERE"/>
+	</select>
+	
+	<!-- 목록 Paging -->
+	<select id="getTodoPagingList" parameterType="com.mpc.todo.service.TodoVo" resultType="com.mpc.todo.service.TodoDto">
+		SELECT
+			A.id
+			,A.text
+		FROM 
+		(
+			SELECT
+				Row_Number() OVER (ORDER BY id DESC) AS RNUM
+				,id
+				,text
+	  		FROM TODO
+	  		<include refid="TODO_WHERE"/>
+		) A
+		WHERE RNUM BETWEEN ${startNum} AND ${endNum}
+	</select>
+    
+    <!-- 정보 조회 -->
+	<select id="getTodo" parameterType="com.mpc.todo.service.TodoDto" resultType="com.mpc.todo.service.TodoDto">
+		SELECT
+			id
+			,text
+  		FROM TODO
+  		WHERE id = ${id}
+	</select>
+    
+    <!-- 등록 -->
+	<insert id="insertTodo" parameterType="com.mpc.todo.service.TodoDto">
+		INSERT INTO TODO
+		( text )
+		VALUES
+		( #{text} )
+		<selectKey resultType="int" keyProperty="id">
+			 SELECT @@IDENTITY AS id
+		</selectKey>
+	</insert>
+	
+	<!-- 수정 -->
+	<update id="updateTodo" parameterType="com.mpc.todo.service.TodoDto">
+		UPDATE TODO
+		SET text = #{text}
+		WHERE id = #{id}		
+	</update>
+
+	<!-- 삭제 -->
+	<delete id="deleteTodo" parameterType="com.mpc.todo.service.TodoDto">
+		DELETE FROM TODO
+		WHERE id = #{id}		
+	</delete>
+</mapper>

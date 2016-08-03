@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Hello React!</title>
+<!-- 
+<script src="build/react.js"></script>
+<script src="build/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+ -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<div id="content"></div>
+<script type="text/babel">
+var Todo = React.createClass({
+	propTypes: {
+		todo: React.PropTypes.shape({
+			id: React.PropTypes.number.isRequired,
+			text: React.PropTypes.string.isRequired
+		}),
+		// 삭제 처리를 I/F로 정의
+		onDelete: React.PropTypes.func.isRequired
+	},
+	// 부모에게 이벤트 처리를 위임한다.
+	_onDelete() {
+		this.props.onDelete(this.props.todo.id);
+	},
+	render() {
+		return (
+			<div>
+			<span>{this.props.todo.text}</span>
+			<button onClick={this._onDelete}>delete</button>
+			</div>
+		);
+	}
+});
+ 
+var TodoList = React.createClass({
+	getInitialState() {
+		return {
+			todos: [
+			{id:1, text:"advent calendar1"},
+			{id:2, text:"advent calendar2"},
+			{id:3, text:"advent calendar3"}
+			]
+		};
+	},
+	// TodoList는 이 컴포넌트가 관리하고 있으므로 삭제 처리도 여기에 존재한다.
+	deleteTodo(id) {
+		this.setState({
+			todos: this.state.todos.filter((todo) => {
+				return todo.id !== id;
+			})
+		});
+	},
+	render() {
+		var todos = this.state.todos.map(
+			(todo) => {
+				return <li key={todo.id}><Todo onDelete={this.deleteTodo} todo={todo} /></li>;
+			}
+		);
+		console.log(todos);
+		return <ul>{todos}</ul>;
+	}
+});
+ 
+ReactDOM.render(<TodoList />, document.getElementById('content'));
+</script>
+
+<a href="../index.html">index.html</a><br/>
+</body>
+</html>

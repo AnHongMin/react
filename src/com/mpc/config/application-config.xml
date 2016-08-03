@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans 
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 					http://www.springframework.org/schema/beans/spring-beans.xsd
+	 					http://www.springframework.org/schema/jee
+						http://www.springframework.org/schema/jee/spring-jee.xsd">
+    
+    <!-- 
+	<jee:jndi-lookup id="commonDataSource" jndi-name="jdbc/COMMON" resource-ref="true"></jee:jndi-lookup>
+	 -->
+	<!-- applicationContext.xml에서 사용 -->
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:com/mpc/config/config.properties</value>
+		</property>
+	</bean>
+	 
+	<bean id="commonDataSource" class="org.apache.commons.dbcp.BasicDataSource" >
+		<property name="driverClassName" value="${jdbc.common.driverClass}" />
+		<property name="url" value="${jdbc.common.url}" />
+		<property name="username" value="${jdbc.common.username}" />
+		<property name="password" value="${jdbc.common.password}" />
+	</bean>
+	
+		
+	<!-- mybatis 설정 -->
+	<bean id="commonSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="commonDataSource"/>
+		<property name="mapperLocations" value="classpath:com/mpc/mapper/app/*/*.xml"></property>
+	</bean>
+	<bean id="commonSqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="commonSqlSessionFactory"></constructor-arg>
+	</bean>
+	<!-- //mybatis 설정 -->
+	
+	<!-- 파일정보 설정
+	<bean id="configProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="location">
+			<value>classpath:com/mpc/config/config.properties</value>
+		</property>
+	</bean>
+ 	-->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="utf-8"/>
+		<property name="maxUploadSize" value="100000000"/>
+		<property name="uploadTempDir" ref="uploadDirResource"/>
+	</bean>
+	<bean id="uploadDirResource" class="org.springframework.core.io.FileSystemResource">
+		<constructor-arg>
+   		<value>${common.upload_path}</value>
+		</constructor-arg>
+	</bean>
+</beans>

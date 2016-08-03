@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<!-- 
+<script src="build/react.js"></script>
+<script src="build/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>    
+<!--
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+-->
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<div id="content"></div>
+
+<script type="text/babel">
+/**
+Prop은 컴포넌트의 속성(어트리뷰트)으로 정의하고 
+컴포넌트 내에서는 this.props.xxx로 참조해 사용합니다. 이것이 전부입니다. 
+Prop으로는 객체, 함수 등 어떤 타입이든 지정할 수 있습니다.
+*/
+
+var Avatar = React.createClass({
+	propTypes: {
+		user: React.PropTypes.shape({
+			id:   React.PropTypes.number.isRequired,
+			name: React.PropTypes.string.isRequired
+		})
+	},
+
+	render() {
+		var avatarImg = `/img/avatar_${this.props.user.id}.png`;
+		return(
+			<div>
+				<span>{this.props.user.name}</span>
+				<img src={avatarImg} />
+			</div>
+		);
+  	}
+});
+
+var user = {
+	id: 10,
+	name: "Hoge"
+};
+
+ReactDOM.render(<Avatar user={user} />, document.getElementById('content'));
+</script>
+
+<a href="../index.html">index.html</a><br/>
+</body>
+</html>

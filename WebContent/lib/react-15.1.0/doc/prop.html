@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<div id="content"></div>
+
+<script type="text/babel">
+// tutorial7.js
+var Comment = React.createClass({
+	rawMarkup: function() {
+		var md = new Remarkable();
+		var rawMarkup = md.render(this.props.children.toString());
+		return { __html: rawMarkup };
+	},
+	render: function() {
+		return (
+			<div className="comment">
+			<h2 className="commentAuthor">
+			{this.props.author}
+			</h2>
+			<span dangerouslySetInnerHTML={this.rawMarkup()} />
+			</div>
+		);
+	}
+});
+
+// tutorial10.js
+var CommentList = React.createClass({
+	render: function() {
+		var commentNodes = this.props.data.map(function(comment) {
+			console.log("CommentList > commentNodes > comment");
+			console.log(comment);
+      		return (
+        		<Comment author={comment.author} key={comment.id}>
+          		{comment.text}
+        		</Comment>
+      		);
+		});
+		return (
+			<div className="commentList">
+			{commentNodes}
+			</div>
+		);
+	}
+});
+
+
+// tutorial8.js
+var data = [
+	{id: 1, author: "Pete Hunt", text: "This is one comment"},
+	{id: 2, author: "Jordan Walke", text: "This is *another* comment"}
+];
+
+// tutorial9.js
+var CommentBox = React.createClass({
+	render: function() {
+		console.log("CommentBox > this.props");
+		console.log(this.props);
+		return (
+			<div className="commentBox">
+			<h1>Comments</h1>
+			<CommentList data={this.props.data} />
+			</div>
+		);
+	}
+});
+
+ReactDOM.render( <CommentBox data={data} />, document.getElementById('content'));
+</script>
+
+<a href="../index.html">index.html</a><br/>
+</body>
+</html>

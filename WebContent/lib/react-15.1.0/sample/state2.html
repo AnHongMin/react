@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title></title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<div id="content"></div>
+<div id="content1"></div>
+
+<script type="text/babel">
+var Text = React.createClass({
+	getInitialState() {
+		return {
+			textValue: "initial value"
+		};
+	},
+	changeText(e) {
+		this.setState({textValue: e.target.value});
+	},
+	render() {
+		return (
+			<div>
+			<p>{this.state.textValue}</p>
+			<input type="text" value={this.state.textValue} onChange={this.changeText} />
+			</div>
+		);
+	}
+});
+
+ReactDOM.render(<Text />, document.getElementById('content'));
+ReactDOM.render(<Text />, document.getElementById('content1'));
+</script>
+
+<a href="../index.html">index.html</a><br/>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<div id="content"></div>
+<!-- 
+/**
+	http://yumere.tistory.com/79
+	Lifecycle Methods
+	Lifecycle Methods는 component의 특정 시점에 실행되는 함수들을 의미한다.
+	이 시점은 component가 Mount될 때일 수도 있고 Unmount될 때일수도 있다. 
+	관련 내용은 문서에서 확인할 수 있다.
+
+	componentWillMount
+	•최초 render가 호출되기 직전 한 번 호출 된다.
+	•이 method에서 this.setState가 호출되어도 render는 한 번 호출 된다.
+
+	componentDidMount
+	•최초 render 호출 이후 한 번 호출되는 method이다.
+	•이 시점에서 React.findDOMNode(this)로 접근이 가능하다.
+
+	componentWillReceiveProps
+	•새로운 props를 받을 때 호출된다.
+	•최초 render 시에는 호출되지 않는다.
+	•이 method 내에서 this.setState()를 호출해도 추가적으로 render를 호출하지 않는다.
+
+	shouldComponentUpdate
+	•새로운 props나 state를 받아 render를 호출하기 전에 호출된다.
+	•이 함수의 return 값이 true이면 render를 하고 false이면 render를 호출하지 않는다.
+	•return이 false이면 componentWillUpdate와 componentDidMount도 실행되지 않는다.
+	•기본적으로 true를 return한다
+
+
+	componentWillUpdate
+	•새로운 props나 state를 받았을 때 render 직전 호출된다.
+	•최초 render 시에는 호출되지 않는다.
+	•this.setState()를 호출할 수 없다.
+
+	componentDidUpdate
+	•component의 업데이트가 DOM에 반영된 직후에 호출된다.
+	•최초 render 시에는 호출되지 않는다.
+	•componentDidUpdate에서는 DOM에 변경을 일으키는 this.setState()를 조심스럽게 사용해야한다. 
+        초기 DOM 변경으로 this.setState가 존재하는 componentDidUpdate를 호출하면 또 update가 일어나고 이 일이 계속 반복 된다.
+
+	componentWillUnmount
+	•component가 DOM에서 Unmount되기 직전에 호출된다.
+
+	Lifecycle 순서
+	1.상위 component에서 props로 데이터 받아 옴
+	2.getInitialState - 초기 state 설정
+	3.componentWillMount - 해당 component가 mount 되기 직전 실행
+	4.componentDidMount - 해당 component가 mount 된 후 실행
+
+	아래 method들은 state 데이터에 변경이 있거나 혹은 상위 component에서 새로운 데이터를 전달 받을 때 실행된다.
+	1.componentWillReceive - 새로운 props를 받을 때 실행
+
+	componentWillReceive를 이용해 새로운 props를 전달 받고, setState를 통해 state를 변경 할 경우 re-rendering이 발생하며 아래 method들을 실행한다.
+	1.shouldComponentUpdate - return true이면 rendering을 하고, false이 면 무시한다
+	2.componentWillUpdate - re-render 발생 후 사용자에게 보여지기 전 실행
+	3.componentDidUpdate - re-render 발생 후 실행
+ -->
+<script type="text/babel">
+var testData = [ 
+{ 'id': 1, 'author': 'author1', 'title': 'title1', 'text': 'text1' }, 
+{ 'id': 2, 'author': 'author2', 'title': 'title2', 'text': 'text2' }, 
+{ 'id': 3, 'author': 'author3', 'title': 'title3', 'text': 'text3' }, 
+{ 'id': 4, 'author': 'author4', 'title': 'title4', 'text': 'text4' }, 
+{ 'id': 5, 'author': 'author5', 'title': 'title5', 'text': 'text5' }, 
+{ 'id': 6, 'author': 'author6', 'title': 'title6', 'text': 'text6' } 
+]; 
+ 
+var SearchBox = React.createClass({ 
+	searchChange: function(e){ 
+		e.preventDefault(); 
+		this.props.searchHandler(this.refs.search_box.value); 
+	}, 
+
+	render: function(){ 
+		return ( 
+			<div className="search-form" style={{textAlign:"center"}}> 
+				<input onChange={this.searchChange} type="text" ref="search_box" placeholder="Input your search text..." /> 
+			</div>
+		)
+	} 
+}) 
+ 
+var DataList = React.createClass({ 
+	getInitialState: function(){ 
+		console.log("getInitialState in DataList"); 
+		return { 
+			data: this.props.data 
+		}; 
+	}, 
+ 
+	componentWillMount: function(){ 
+		console.log("componentWillMount in DataList"); 
+	}, 
+ 
+	componentWillUpdate: function(){ 
+		console.log("componentWillUpdate in DataList"); 
+	}, 
+	componentWillUnmount: function(){ 
+		console.log("componentWillUnmount"); 
+	}, 
+	componentWillReceiveProps: function(nextProps){ 
+		console.log("componentWillReceiveProps in DataList"); 
+		this.setState({ data: nextProps.data }); 
+	}, 
+  
+	componentDidMount: function(){ 
+		console.log("componentDidMount in DataList"); 
+	}, 
+
+	componentDidUpdate: function(){ 
+		console.log("componentDidUpdate in DataList"); 
+	}, 
+
+	shouldComponentUpdate: function(){ 
+		console.log("shouldComponentUpdate in DataList"); 
+		return true 
+	}, 
+
+	render: function(){ 
+		var data_template = this.state.data.map(function(d){ 
+			return ( 
+        		<div className="item" style={{overflow:"auto", margin:"20px auto", border:"1px solid black", padding:"5px"}} key={d.id}> 
+          			<div className="data-header" style={{marginBottom: "5px", borderBottom:"1px solid #e7e7e7"}}> 
+            			<span className="data-idx" style={{color:"#333", marginRight:"20px"}}>{d.id}</span> 
+            			<span className="data-title" style={{fontWeight:"bold"}}>{d.title}</span> 
+            			<span className="data-author" style={{float:"right"}}>{d.author}</span> 
+          			</div> 
+          			<div className="data-content"> 
+          			{d.text} 
+          			</div>
+				</div> 
+			); 
+		}) 
+
+		return ( 
+      		<div className="item-wrapper"> 
+      		{data_template} 
+      		</div> 
+    	) 
+	} 
+});
+
+var SampleWrapper = React.createClass({ 
+	getInitialState: function(){ 
+    	return { 
+			data: this.props.data 
+		}; 
+	}, 
+
+
+	_searchHandler: function(text){ 
+    	var nextDataList = this.props.data.filter(function(d){ 
+      		return d.text.indexOf(text) >= 0; 
+    	}); 
+
+		this.setState({ 
+      		data: nextDataList 
+    	}); 
+	}, 
+
+	render: function(){ 
+		return ( 
+			<div style={{margin: "0 200px"}}> 
+      			<SearchBox searchHandler={this._searchHandler}/> 
+      			<DataList data={this.state.data}/> 
+      		</div> 
+		) 
+	} 
+})
+
+ReactDOM.render( 
+	<SampleWrapper data={testData}/>, 
+	document.getElementById('content') 
+); 
+</script>
+
+<a href="../index.html">index.html</a><br/>
+</body>
+</html>

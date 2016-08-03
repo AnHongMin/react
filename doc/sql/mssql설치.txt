@@ -1,0 +1,38 @@
+[MSSQL 2012 설치 및 서버접속을 위한 환경설정, DB 작업]
+
+# xx.xx.xx.xx 원격접속정보 
+: administrator / xxxx
+
+
+- Microsoft SQL Server 2012 Express 설치방법
+1. http://www.microsoft.com/ko-kr/download/details.aspx?id=29062 접속 다운로드
+2. xx.xx.xx.xx 서버에 SQLEXPRWT_x64_KOR(64bit 파일) copy
+3. 설치시 sa 패스워드 'xxxxxx' 로 설정
+
+
+- MSSQL SERVER 설치 완료후 환경설정
+
+1.'제어판\모든 제어판 항목\관리 도구\고급 보안이 포함된 Windows 방화벽' 실행후 
+  인바운드 규칙에 새규칙 추가 : Mssql Port / 1433 / TCP
+
+2. SQL 서버 구성관리자 실행
+
+   2-1. SQL Server 네트워크구성 > MSSQLSERVER에 대한 프로토콜 > TCP/IP 상태 '사용'으로 변경
+
+   2-2. SQL Server 서비스 > SQL Server Browser, SQL Server(MSSQLSERVER) 다시 시작
+       : 이유 변경한 프로토콜 설정을 인식하기 위하여
+
+
+참조 경로) http://blog.naver.com/onimnv/220363603007
+
+
+- DB 작업
+
+# SQL Server 2014 Management Studio 실행
+
+1. Windows 인증으로 접속 후 보안 > 로그인 > ahm 계정생성
+
+  - 계정옵션정보 설정
+  : 일반 > 기본데이터베이스 : ahm, 암호정책 강제적용 체크
+    서버 역활 > public, sysadmin 체크
+    사용자 매핑 > db_owner, public 체크

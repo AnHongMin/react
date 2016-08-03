@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title></title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<div id="content"></div>
+  
+<script type="text/babel">
+var MixinA = {
+	componentWillMount() {
+		console.log("mixinA");
+	}
+};
+ 
+var MixinB = {
+	componentWillMount() {
+		console.log("mixinB");
+	}
+};
+ 
+var Hello = React.createClass({
+	mixins: [MixinA, MixinB],
+	componentWillMount() {
+		console.log("hello");
+	},
+	render() {
+		return <div>hello</div>
+	}
+});
+
+ReactDOM.render(<Hello />, document.getElementById('content'));
+</script>
+
+<a href="../index.html">index.html</a><br/>
+</body>
+</html>

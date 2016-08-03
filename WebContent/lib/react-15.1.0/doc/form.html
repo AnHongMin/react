@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<div id="content"></div>
+<script type="text/babel">
+// tutorial16.js
+var CommentForm = React.createClass({
+	getInitialState: function() {
+		return {author: '', text: ''};
+	},
+	handleAuthorChange: function(e) {
+		this.setState({author: e.target.value});
+	},
+	handleTextChange: function(e) {
+		this.setState({text: e.target.value});
+	},
+	handleSubmit: function(e) {
+		// Call preventDefault() on the event to prevent the browser's default action of submitting the form.
+		e.preventDefault();
+		var author = this.state.author.trim();
+		var text = this.state.text.trim();
+		if (!text || !author) {
+			return;
+		}
+		console.log("CommentForm > handleSubmit");
+		console.log("author : "+author);
+		console.log("text : "+text);
+		// TODO: send request to the server
+		this.setState({author: '', text: ''});
+	},
+	render: function() {
+		return (
+			<form className="commentForm" onSubmit={this.handleSubmit}>
+			<input
+				type="text"
+				placeholder="Your name"
+				value={this.state.author}
+				onChange={this.handleAuthorChange}
+			/>
+			<input
+				type="text"
+          		placeholder="Say something..."
+				value={this.state.text}
+				onChange={this.handleTextChange}
+			/>
+			<input type="submit" value="Post" />
+			</form>
+		);
+	}
+});
+
+ReactDOM.render(
+	<CommentForm />,
+	document.getElementById('content')
+);
+</script>
+
+<a href="../index.html">index.html</a><br/>
+</body>
+</html>

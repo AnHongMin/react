@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title></title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<div id="content"></div>
+  
+<script type="text/babel">
+var OreSelectBox = React.createClass({
+	getDefaultProps() {
+		return {
+			answers: [1, 10, 100, 1000]
+		};
+	},
+	getInitialState() {
+		return {
+			selectValue: 1,
+			selectValues: [1,100]
+		};
+	},
+	onChangeSelectValue(e) {
+		this.setState({selectValue: e.target.value});
+	},
+	onChangeSelectValues(e) {
+		var values = new Array();
+		if(e.target.type == "select-multiple") {
+			for(var i=0; i < e.target.options.length; i++) {
+				if(e.target.options[i].selected == true){
+					values.push(e.target.options[i].value);			
+				}
+			}
+		}
+		this.setState({selectValues: values});
+	},
+	render() {
+		var options = this.props.answers.map(function(answer) {
+			return <option value={answer} key={answer}>{answer}</option>;
+		});
+		return (
+			<div>
+				<div>selectValue: {this.state.selectValue}</div>
+				<div>
+					<select value={this.state.selectValue} onChange={this.onChangeSelectValue}>
+					{options}
+					</select>
+				</div>
+        		<div>selectValues: {this.state.selectValues.join(",")}</div>
+				<div>
+          			<select multiple={true} defaultValue={this.state.selectValues} onChange={this.onChangeSelectValues}>
+            		{options}
+          			</select>
+				</div>
+      		</div>
+		);
+	}
+});
+ReactDOM.render(<OreSelectBox />, document.getElementById('content'));
+</script>
+
+<a href="../index.html">index.html</a><br/>
+</body>
+</html>

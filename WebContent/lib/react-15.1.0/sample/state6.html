@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title></title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.1.0/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
+<script type="text/javascript">
+</script>
+</head>
+<body>
+<div id="content"></div>
+<script type="text/javascript">
+function getType(obj) {
+	var objectName = Object.prototype.toString.call(obj);
+	var match = /\[object (\w+)\]/.exec(objectName);
+	return match[1].toLowerCase();
+}
+//object의 내용을 복사해서 넘겨준다.
+function getClone(obj){
+	if (null == obj || "object" != typeof obj) return obj;
+    if (getType(obj) ==  'date') {
+		var copy = new Date();
+		copy.setTime(obj.getTime());
+		return copy;
+	}
+	if (getType(obj) == 'array') {
+		var copy = [];
+        for (var i = 0, len = obj.length; i < len; i++) {
+            copy[i] = this.getClone(obj[i]);
+        }
+        return copy;
+    }
+    if (getType(obj) == 'object') {
+		var copy = {};
+        for (var attr in obj) {
+            if (obj.hasOwnProperty(attr)) copy[attr] = this.getClone(obj[attr]);
+        }
+        return copy;
+    }
+    return obj; 
+}
+</script>
+  
+<script type="text/babel">
+
+var Hoge = React.createClass({
+	getInitialState() {
+		return {
+			style: {
+				color: "#ccc",
+				width: 200,
+				height: 100
+			}
+		};
+	},
+	onChange() {
+		/*
+		javascript
+		var clonedArray = getClone(this.state.style);
+		if((clonedArray.hasOwnProperty("color"))){
+			delete clonedArray.color;
+			clonedArray["color"] = "red";
+		}
+		console.log(clonedArray);
+		this.setState({ style: clonedArray});
+		*/
+
+		/*
+		jquery
+		var clonedArray = {
+			color: "red"
+		};
+		var obj = this.state.style;
+		$.extend(obj, clonedArray);
+		console.log(obj);
+		*/
+
+		// react
+		var style = Object.assign({}, this.state.style, {color:"red"});
+		console.log(style);  
+		this.setState({style: style});
+	},
+	render() {
+    	return (
+      		<div style={this.state.style} onClick={this.onChange}>xxx</div>
+    	);
+	}
+});
+ReactDOM.render(<Hoge/>, document.getElementById('content'));
+</script>
+
+<a href="../index.html">index.html</a><br/>
+</body>
+</html>

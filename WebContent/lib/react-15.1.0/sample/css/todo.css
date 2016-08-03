@@ -1,0 +1,75 @@
+.div_menu {
+	width:30%;
+	float : left;
+}
+.div_todo {
+	width:70%;
+	float : right;
+}
+.todo-list {
+	border: 1px solid black;
+	overflow-y:scroll;
+	margin: 10px;
+	padding: 0;
+	list-style: none;
+	height:400px;
+}
+
+.todo-list li {
+	position: relative;
+	font-size: 15px;
+	box-shadow: 0 -1px 0 #ededed;
+	overflow: hidden;
+}
+
+.todo-list li div {
+	white-space: pre;
+	word-break: break-word;
+	padding: 15px 10px 10px 10px;
+	margin-left: 15px;
+	display: block;
+	line-height: 1.2;
+}
+
+.todo-list li div span{
+	margin-left: 25px;
+}
+
+.todo-list button{
+	margin-left: 5px;
+}
+
+
+.todo-form { 
+	height: 30px;
+	margin: 10px;
+	padding: 15px 10px 10px 10px;
+	border: 2px dotted red;
+}
+ 
+.todo-form input{
+	margin-left: 15px;
+}
+
+.todo-form button{
+	margin-left: 5px;
+}
+
+.todo-search { 
+	height: 30px;
+	margin: 10px;
+	padding: 15px 10px 10px 10px;
+	border: 2px dotted blue;
+}
+
+.todo-list-page { 
+	clear:both; text-align:center; margin-top:10px;
+}
+
+.todo-list-page a{ 
+	margin-left: 10px;
+}
+
+.todo-list-page span{ 
+	margin-left: 10px;
+}
