@@ -1,0 +1,531 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>TestPage</title>
+</head>
+<body>
+
+<!-- ocx 등록 -->
+<!-- <OBJECT CLASSID="CLSID:8E4AEC06-DB7D-4879-9EC4-CC671F1B6BCA" CODEBASE="WebSPOcx.cab#version=1,1,1,4" ID="icsp" width="0" height="0" > -->
+<OBJECT CLASSID="CLSID:8E4AEC06-DB7D-4879-9EC4-CC671F1B6BCA" CODEBASE="WebSPOcx.cab#version=1,1,1,6" ID="icsp" width="0" height="0" >
+</OBJECT>
+<div id="date"></div>
+<br>
+<table>
+   <tr>
+     <td width="200">아이디 : <input id="nID" name="nID" type="text" size="10" value=""></td>
+     <td width="300">비밀번호 : <input id="nPW" name="nPW" type="text" size="15" maxlength="15" value="mpc1004"></td> 
+     <td width="200">내선번호 : <input id="nExt" name="nExtension" type="text" size="10" maxlength="10" value=""> </td>
+ 	 <td><input type="button" name="image" id="login"  onClick="login()" value="로그인" style="width:60px" ></td>
+     <td><input type="button" name="image" id="logout"  onClick="logout()" value=로그아웃  style="width:80px"></td>
+	 <td width="200">상담원 상태 : <input name="txtStatus" id="txtStatus" type="text" size="10" maxlength="10" value="로그아웃" readonly="readonly" ></td><!-- 상담원 상태창 -->
+     <td width="500">함수 명, 리턴값 : <input id="nFunc" name="nFunc" type="text" size="30" maxlength="30" value=""></td>
+   </tr>
+</table>
+<br>
+<table>
+    <tr>
+	  	<td width="200"><div align="center">tel : <input type="text" class="textboxcss" id=txtTel value="" size="23" maxlength="23"></div></td><!-- 전화번호 -->
+	  
+	    <td><input type="button" name="image" id="makecall"  onClick="makecall()"value=전화걸기  style="width:80px"></td>
+	    <td><input type="button" name="image5" id="answer" onClick="answer()" value=전화받기  style="width:80px"></td>
+	    <td><input type="button" name="image2" id="hangup"  onClick="hangup()" value=전화끊기  style="width:80px"></td>
+	
+	    <td><input type="button" name="image6" id="hold" onClick="hold()" value=보류  style="width:60px"></td>
+	    <td><input type="button" name="image7" id="unhold" onClick="unhold()" value=보류해제  style="width:80px"></td>
+	    <td><input type="button" name="image7" id="transferInit" onClick="transferInit()" value=호전환시도  style="width:90px"></td>
+	    <td><input type="button" name="image7" id="transferCancel" onClick="transferCancel()" value=호전환취소  style="width:90px"></td>  
+	    <td><input type="button" name="image7" id="transferComplete" onClick="transferComplete()" value=호전환완료  style="width:90px"></td>
+	
+	    <td><input type="button" name="image7" id="conferenceInit" onClick="conferenceInit()" value=3자통화시도  style="width:90px"></td>
+	    <td><input type="button" name="image7" id="conferenceCancel" onClick="conferenceCancel()" value=3자통화취소  style="width:90px"></td>  
+	    <td><input type="button" name="image7" id="conferenceComplete" onClick="conferenceComplete()" value=3자통화완료 style="width:90px"></td>
+	
+	    <td><input type="button" id="ready" onClick="ready()" value=대기  style="width:60px"></td>
+		<td><input type="button" id="wrapup" onClick="wrapup()" value="후처리"  style="width:60px"></td>
+	    
+	    <td><select id="notready2" name="notready2"  style="width:100px">
+				<option value="1">이석코드1</option>
+				<option value="2">이석코드2</option>
+				<option value="3">이석코드3</option>
+			</select>
+		</td>
+		<td><input type="button" id="notready" onClick="notready()" value="이석"  style="width:60px"></td>
+  </tr>
+</table>
+<br>
+<table>
+  <tr>
+		<td width="40"><input type="button" id="eduGetBtn" value="getEduValue" onClick="getOneEDUValue()"></td>
+		<td>Field : </td>
+		<td><input type="text" id="eduFieldTxt"></td>
+  </tr>
+  <tr>
+		<td><input type="button" id="eduSetBtn" value="setEduValue" onClick="setOneEDUValue()"></td>
+		<td width="40">Value : </td>
+		<td><input type="text" id="eduValueTxt"></td>
+  </tr>
+</table>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ▼Event Log▼&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+<input type="button" value="Log Delete" onClick="logDelete()">
+<br>
+<div align="left" id="log" style="background-color:yellow;width:1000px;font-size:20px "></div>
+<script src="jquery-1.10.2.js"></script>
+<script type="text/javascript">
+var result;
+var hours;
+var minutes;
+var seconds;
+var logFst=true;
+
+window.onbeforeunload = function(e){
+	alert(1);
+	//logout();
+};
+
+window.onload = function init(){	
+	$("#login").attr("disabled",false);
+	$("#logout").attr("disabled",true);
+	$("#makecall").attr("disabled",true);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",true);
+	$("#notready2").attr("disabled",true);
+	today();
+};
+
+function today(){
+	 var now = new Date();
+     var year= now.getFullYear();
+     var mon = (now.getMonth()+1)>9 ? ''+(now.getMonth()+1) : '0'+(now.getMonth()+1);
+     var day = now.getDate()>9 ? ''+now.getDate() : '0'+now.getDate();
+     hours = now.getHours();
+     minutes = now.getMinutes();
+     seconds = now.getSeconds();        
+     var chan_val = year + '-' + mon + '-' + day + "  " + hours + ":"+minutes+":"+seconds;
+     $("#date").html(chan_val);
+     setTimeout(function(){
+    	 today();
+     },1000);
+}
+
+function logDelete(){
+	$("#log").html("");
+	logFst=true;
+}
+
+function login(){
+	result =	icsp.OpenEx($("#nID").val(),$("#nPW").val(),$("#nExt").val()) ;
+	$("#nFunc").val("OpenEx() , "+result);
+	icsp.Login()
+}
+
+function logout(){
+	result = icsp.Logout();
+	$("#nFunc").val("Logout() , " + result);
+	result = icsp.Close();
+	$("#nFunc").val("Close() , " + result);
+}
+
+function makecall(){
+	var tempStr;
+	var digit;
+	
+	tempStr = $("#txtTel").val();
+	if(tempStr.substring(0.2)=="02"){
+		tempStr = tempStr.substring(2,tempStr.length-2);
+		$("#txtTel").val(tempStr);
+	}
+	if(tempStr.length>6){
+		digit = 9 + $("#txtTel").val();
+	}else{
+		digit = $("#txtTel").val();
+	}
+	
+	result = icsp.Makecall(digit);
+	$("#nFunc").val("Makecall("+digit+") , "+result);	
+}
+
+function ready(){
+	result = icsp.Ready();
+	$("#nFunc").val("Ready() , " + result);
+}
+
+function notready(){
+	var readyFlag = $("#notready2").val();
+	result = icsp.NotReady(readyFlag);
+	$("#nFunc").val("NotReady("+readyFlag+") , "+result)
+}
+
+function hangup(){
+	result = icsp.Hangup();
+	$("#nFunc").val("Hangup() , "+result);
+}
+
+function hold(){
+	result = icsp.Hold();
+	$("#nFunc").val("Hold() , "+result);
+}
+
+function unhold(){
+	result = icsp.HoldReconnect();
+	$("#nFunc").val("HoldReconnect() , "+result);
+}
+
+function wrapup(){
+	result = icsp.Wrapup();
+	$("#nFunc").val("Wrapup() , "+result);
+}
+
+</script>
+<SCRIPT LANGUAGE=javascript FOR="icsp" EVENT="OnLogin(oEvtData)">
+/* 교환기에 로그인 되었을 때 이벤트 */
+	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",false);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",false);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",false);
+	$("#notready2").attr("disabled",false);
+	$("#txtStatus").val("로그인");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnLogin("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnLogin("+oEvtData+")");
+	}
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnAuxWork(oEvtData)">
+/* 상담원이 이석 상태일때  */
+ 	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",false);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",false);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",false);
+	$("#notready2").attr("disabled",false);
+	$("#txtStatus").val("이석중");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnAuxWork("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnAuxWork("+oEvtData+")");
+	}
+	
+</SCRIPT>
+
+                <!-- 통화중일 때-->
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnBusy(oEvtData)">
+/* 상담원(나)가 통화중일 때 고객으로부터 호가 들어오면 날아오는 이벤트 #정확하지않음 */
+	alert(oEvtData);
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnConference(oEvtData)">
+	alert("OnConference");
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnConnect(oEvtData)">
+/* 고객과 통화가 연결됐을 시에 이벤트 */
+	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",true);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",false);
+	$("#hold").attr("disabled",false);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",false);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",false);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",true);
+	$("#notready2").attr("disabled",true);
+	$("#txtStatus").val("통화중");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnConnect("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnConnect("+oEvtData+")");
+	}
+	
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnDisconnect(oEvtData)">
+/* 고객이 전화를 끊었을(거절) 경우 날아오는 이벤트 */
+ 	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",false);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",false);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",false);
+	$("#notready2").attr("disabled",false);
+	$("#txtStatus").val("후처리중");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnDisconnect("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnDisconnect("+oEvtData+")");
+	}
+	
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnDrop(oEvtData)">
+	alert("OnDrop");
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnHold(oEvtData)">
+	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",true);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",false);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",false);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",true);
+	$("#notready2").attr("disabled",true);
+	$("#txtStatus").val("보류중");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnHold("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnHold("+oEvtData+")");
+	}
+	
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnHoldReconnect(oEvtData)">
+	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",true);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",false);
+	$("#hold").attr("disabled",false);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",false);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",false);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",true);
+	$("#notready2").attr("disabled",true);
+	$("#txtStatus").val("통화중");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnHoldReconnect("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnHoldReconnect("+oEvtData+")");
+	}
+	
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnIncomingCall(oEvtData)">
+/* 전화가 걸려왔을 때 이벤트 */
+/* vdu_id^  |call_ref_id^  |monitor^2009  |orig^   |dest^2009  | ani^  |dnis^  |called^  |calltype^  |ctype^  | */ */ 
+	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",true);
+	$("#answer").attr("disabled",false);
+	$("#hangup").attr("disabled",false);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",true);
+	$("#notready2").attr("disabled",true);
+	$("#txtStatus").val("호인입");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnIncomingCall("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnIncomingCall("+oEvtData+")");
+	}
+	
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnLogout(oEvtData)">
+/* 로그아웃 시에 날아오는 이벤트 */
+	$("#login").attr("disabled",false);
+	$("#logout").attr("disabled",true);
+	$("#makecall").attr("disabled",true);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",true);
+	$("#notready2").attr("disabled",true);
+	$("#txtStatus").val("로그아웃");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnLogout("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnLogout("+oEvtData+")");
+	}
+	
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnReady(oEvtData)">
+/* 상담원이 대기 상태가 되었을 때 */
+	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",false);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",false);
+	$("#notready").attr("disabled",false);
+	$("#notready2").attr("disabled",false);
+	$("#txtStatus").val("대기중");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnReady("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnReady("+oEvtData+")");
+	}
+	
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnRing(oEvtData)">
+/* 전화걸기 버튼 클릭 시 전화기 벨 울리는 순간 날아오는 이벤트 */
+	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",true);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",true);
+	$("#notready2").attr("disabled",true);
+	$("#txtStatus").val("발신중");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnRing("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnRing("+oEvtData+")");
+	}
+	
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnSendData(oEvtData)">
+	alert("OnSendData");
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnSessionFailed(oEvtData)">
+	alert("OnSessionFailed");
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnServerFailed(oEvtData)">
+	alert("OnServerFailed");
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnTransfer(oEvtData)">
+	alert("OnTransfer");
+</SCRIPT>
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnWrapUp(oEvtData)">
+	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",false);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",false);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",false);
+	$("#notready2").attr("disabled",false);
+	$("#txtStatus").val("후처리중");
+	if(logFst==true){
+		logFst=false;
+		$("#log").append("["+hours+":"+minutes+":"+seconds+"]OnWrapUp("+oEvtData+")");
+	}else{
+		$("#log").append("<br>["+hours+":"+minutes+":"+seconds+"]OnWrapUp("+oEvtData+")");
+	}
+	
+</SCRIPT>
+</body>
+</html>

@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="cache-control" content="no-cache"> 
+<meta http-equiv="pragma" content="no-cache">
+<title>MPC</title>
+<style>
+table {
+    border-collapse: collapse;
+}
+
+th, td {
+	padding: 10px 10px 10px 10px;
+    text-align: right;
+}
+.bg_gray {
+	background-color:rgb(223, 222, 219)
+}
+</style>
+<script type="text/javascript">
+	function noEvent(){
+		// F5 = 116
+		if(event.keyCode == 116){
+			event.keyCode = 2;
+			return false;
+		// N = 78, R = 82
+		}else if(event.ctrlKey && (event.keyCode == 78 || event.keyCode == 82)){
+			return false;
+		}
+	}
+	document.onkeydown = noEvent;
+</script>
+</head>
+<body oncontextmenu="return false">
+
+<!-- cti ocx 등록 -->
+<OBJECT CLASSID="CLSID:8E4AEC06-DB7D-4879-9EC4-CC671F1B6BCA" CODEBASE="WebSPOcx.cab#version=1,1,1,6" ID="icsp" width="0" height="0" >
+</OBJECT>
+
+<!-- 녹취 ocx 등록 -->
+<OBJECT ID="ir2capi" WIDTH="0" HEIGHT="0" CLASSID="CLSID:4528386D-BA52-42B1-9FB1-192F3A671FCC">
+<PARAM NAME="lang" VALUE="utf8">
+</OBJECT>
+
+<table style="border:0px; important;">
+	<tr>
+		<td valign="top" style="border:0px; important;" rowspan="2">
+			<table id="loginTable" style="border: 1px solid black; width:300px;">
+				<tr>
+					<td colspan="2" style="text-align:center;font-size: 20pt"><b>Login Info</b></td>
+				</tr>
+				<tr>
+					<td>ID</td>
+					<td><input id="userID" name="userID" type="text" size="14"/></td><!--  value="MPC002" -->
+				</tr>
+				<tr>
+					<td>PWD</td>
+					<td><input id="userPWD" name="userPWD" type="password" size="15"/></td>
+				</tr>
+				<tr>
+					<td>내선</td>
+					<td><input id="nExt" name="nExtension" type="text" size="14" maxlength="10"></td><!-- value="0759" -->
+				</tr>
+				<tr id="loginTableTr1" style="display:none;">
+					<td>비밀번호</td>
+					<td><input id="nPW" name="nPW" type="text" size="14" maxlength="10" value="mpc1004"></td>
+			 	</tr>
+			 	<tr id="loginTableTr2">
+					<td>녹취 아이디</td>
+					<td><input id="innoID" name="innoID" type="text" size="14" style="background-color:rgb(223, 222, 219)" readonly="readonly"/></td><!--  value="MPC002" -->
+				</tr>
+				<tr id="loginTableTr3">
+					<td>CTI 아이디</td>
+					<td><input id="nID" name="nID" type="text" size="14" style="background-color:rgb(223, 222, 219)" readonly="readonly"/></td><!-- value="test02" -->
+				</tr>
+			 	<tr>
+					<td colspan="2" style="text-align:center;">
+						<input type="button" name="image" id="login"  onClick="login()" value="Login" style="width:80px" >
+						<input type="button" name="image" id="logout"  onClick="logout()" value="Logout"  style="width:80px">
+					</td>
+			     </tr>
+			</table>
+		</td>
+		<td valign="top">
+			<table id="ctiTable" style="display:none;border: 1px solid black; width:500px;">
+				<!-- 상담원 상태창 -->
+				<tr id="ctiTableTr1">
+					<td>
+						상담원 상태 &nbsp;
+						<input name="txtStatus" id="txtStatus" type="text" size="10" maxlength="10" value="로그아웃" style="background-color:rgb(223, 222, 219)" readonly="readonly"/>
+					</td>
+					<td>
+						함수 명, 리턴값 &nbsp;
+						<input id="nFunc" name="nFunc" type="text" size="30" maxlength="30" value="" style="background-color:rgb(223, 222, 219)" readonly="readonly"/>
+					</td>
+				</tr>
+				<tr>
+					<td rowspan="2">
+						전화번호 &nbsp;&nbsp;
+						<input type="text" class="textboxcss" id=txtTel value="" size="23" maxlength="23" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')"/>
+					</td>
+					<td>
+					    <input type="button" name="image" id="makecall"  onClick="makecall()" value=전화걸기  style="width:80px"/>&nbsp;
+					    <input type="button" name="image5" id="answer" onClick="answer()" value=전화받기  style="width:80px;"/>
+					    <input type="button" name="image2" id="hangup"  onClick="hangup()" value=전화끊기  style="width:80px"/>
+					    <input type="button" name="image6" id="hold" onClick="hold()" value=보류  style="width:60px;"/>
+					    <input type="button" name="image7" id="unhold" onClick="unhold()" value=보류해제  style="width:80px;"/>
+					    <input type="button" id="ready" onClick="ready()" value=대기  style="width:60px;"/>
+					    <input type="button" id="wrapup" onClick="wrapup()" value="후처리"  style="width:60px;"/>
+					    <select id="notready2" name="notready2"  style="width:100px;">
+							<option value="1">이석코드1</option>
+							<option value="2">이석코드2</option>
+							<option value="3">이석코드3</option>
+					    </select>
+				    	<input type="button" id="notready" onClick="notready()" value="이석"  style="width:60px;"/>
+					</td>
+			    </tr>
+			    <tr id="ctiTableTr2">
+				    <td>
+				    	<input type="button" name="image7" id="transferInit" onClick="transferInit()" value=호전환시도  style="width:90px"/>
+					    <input type="button" name="image7" id="transferCancel" onClick="transferCancel()" value=호전환취소  style="width:90px"/>  
+					    <input type="button" name="image7" id="transferComplete" onClick="transferComplete()" value=호전환완료  style="width:90px"/>
+					
+					    <input type="button" name="image7" id="blindTransfer" onClick="blindTransfer()" value=호전환시도완료  style="width:110px"/>
+					
+					    <input type="button" name="image7" id="conferenceInit" onClick="conferenceInit()" value=3자통화시도  style="width:90px"/>
+					    <input type="button" name="image7" id="conferenceCancel" onClick="conferenceCancel()" value=3자통화취소  style="width:90px"/>
+					    <input type="button" name="image7" id="conferenceComplete" onClick="conferenceComplete()" value=3자통화완료 style="width:90px"/>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+			<table id="innoTable" style="display:none;border: 1px solid black; width:500px; height:238px;">
+				<tr style="display:none;">
+					<td>통화구분 (g_sCallType)</td>
+					<td>
+						<input id="g_sCallType" type="text" size="25" value="" style="background-color:rgb(223, 222, 219)" readonly="readonly"/>
+					</td>
+				</tr>
+				<tr style="display:none;">	
+					<td>녹취키 (sInnoRecKey)</td>
+					<td>
+						<input id="sInnoRecKey" type="text" size="25" value="" style="background-color:rgb(223, 222, 219)" readonly="readonly"/>
+					</td>
+				</tr>
+				<tr style="display:none;">
+					<td>상대방번호 (g_DialNo)</td>
+					<td>
+						<input id="g_DialNo" type="text" size="25" value="" style="background-color:rgb(223, 222, 219)" readonly="readonly"/>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span>고객명</span>
+					</td><!-- 고객명 P3 -->
+					<td><input id="p3" type="text" size="25" value=""/></td>
+				</tr>
+				<tr>	
+					<td>
+						<span>상담유형</span>
+					</td><!-- 상담유형 소분류 P5 -->
+					<td><input id="p5" type="text" size="25" value=""/></td>
+				</tr>
+				<tr>	
+					<td>
+						<span>주민번호</span>
+					</td><!-- 주민번호 P6 -->
+					<td><input id="p6" type="text" size="25" value=""/></td>
+				</tr>
+				<tr style="display:none;">
+					<td>
+						<span style="color:red;">고객명 (p7)</span>
+						<span>고객명2 (inno)</span>
+					</td><!-- 고객명 P7 -->
+					<td><input id="p7" type="text" size="25" value=""/></td>
+				</tr>
+				<tr style="display:none;">	
+					<td>
+						<span style="color:red;">생년월일 (p8)</span>
+						<span>상담유형 소분류 (inno)</span>
+					</td><!-- 상담유형 소분류 P8 -->
+					<td><input id="p8" type="text" size="25" value=""/></td>
+				</tr>
+				<tr>	
+					<td>
+						<span>증권번호</span>
+					</td><!-- 부가정보10 P9 -->
+					<td><input id="p9" type="text" size="25" value=""/></td>
+				</tr>
+				<tr>
+				 	<td colspan="2">
+				 		<input type="button" id="save"  onClick="mng.save()" value="저장"/>
+				 	</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>
+<!-- 
+<table>
+  <tr>
+		<td width="40"><input type="button" id="eduGetBtn" value="getEduValue" onClick="getOneEDUValue()"/></td>
+		<td>Field : </td>
+		<td><input type="text" id="eduFieldTxt"/></td>
+  </tr>
+  <tr>
+		<td><input type="button" id="eduSetBtn" value="setEduValue" onClick="setOneEDUValue()"/></td>
+		<td width="40">Value : </td>
+		<td><input type="text" id="eduValueTxt"/></td>
+  </tr>
+</table>
+<input type="button" value="Log Delete" onClick="mng.logDelete()"/>
+ -->
+<div align="left" id="log"></div>
+<script src="jquery-1.10.2.js"></script>
+<script type="text/javascript">
+//---------------------------------------------------------------------- 내부 변수모음
+var devHost = (location.host ? location.host + ":" + location.port : "192.168.52.156");
+
+//---------------------------------------------------------------------- 녹취 변수모음
+var host = "192.168.52.61";		/* 녹취서버 IP 주소 */
+var port = 3770;				/* 녹취서버 포트 - 고정*/		
+
+var shost = "192.168.52.65";	/* 백업 녹취서버 IP 주소 */
+var sport = 3770;				/* 백업 녹취서버 포트 - 고정 */		
+
+var timeout = 3;				/* 서버 접속 타임아웃(단위 초) - 고정 */
+
+//---------------------------------------------------------------------- CTI 변수모음
+var result;
+var transFlag = false;
+var confFlag = false;
+
+window.onbeforeunload = function(e){
+	clearInterval("run()");
+	if($("#logout").attr("disabled")=="disabled"){
+//		logout(false);
+	}else{
+//		logout();
+	}
+};
+
+window.onload = function init(){
+	$("#login").attr("disabled",false);
+	$("#logout").attr("disabled",true);
+	$("#makecall").attr("disabled",true);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",true);
+	$("#notready2").attr("disabled",true);
+	$("#blindTransfer").attr("disabled",true);
+	
+	
+	$("#save").attr("disabled",true);	
+	setInterval("run()",1800000);
+	
+	// UI변경 관련 처리
+	$("#loginTableTr1").hide();
+//	$("#loginTableTr2").hide();
+//	$("#loginTableTr3").hide();
+	$("#ctiTableTr1").hide();
+	$("#answer").hide();
+	$("#hold").hide();
+	$("#unhold").hide();
+	$("#ready").hide();
+	$("#wrapup").hide();
+	$("#notready2").hide();
+	$("#notready").hide();
+	$("#ctiTableTr2").hide();
+	$("#log").hide();
+	
+	$("#userID").val("");
+	$("#userPWD").val("");
+	$("#innoID").val("");
+	$("#nID").val("");
+	$("#nExt").val("");
+	$('#userID').focus();
+};
+
+// 로그인 정보 자동설정
+$(function() {
+	$('#userPWD').on("blur", function(e){
+		if($('#userID').val()==""){
+			$('#userID').focus();	
+		}else{
+			mng.getLoginData();
+		}
+	});
+
+	$('#userPWD').keypress(function(event){
+		if(event.which == 13){
+			if($('#userID').val()==""){
+				$('#userID').focus();	
+			}else{
+				mng.getLoginData();
+			}
+		}
+	});
+	
+	$('#userID').keypress(function(event){
+		if(event.which == 13){
+			$('#userPWD').focus();
+		}
+	});
+});
+
+var mng = {
+	
+	//---------------------------------------------------------------------- 로그 함수모음
+	//내부 확인 로그 삭제
+	logDelete : function(){
+		$("#log").html("");
+	},
+
+	//내부 확인 로그 기록
+	logMsg : function(msg){
+		$("#log").append(msg+"<br/>");
+	},
+	
+	//---------------------------------------------------------------------- css 함수모음
+	// 텍스트 비활성화
+	textReadOnlyT : function(s){
+		$(s).attr("readOnly","readOnly").attr("style","background-color:rgb(223, 222, 219);");
+	},
+
+	// 텍스트 활성화
+	textReadOnlyF : function (s){
+		$(s).removeAttr("readOnly").attr("style","");
+	},
+	
+	//---------------------------------------------------------------------- 기능 함수모음
+	// 녹취설치
+	innoDownload : function(){
+		window.open ("http://"+devHost+"/TEST/down/download_ir2capi.html", "", "toolbar=no, status=yes,location=no, width=100, height=100, top=100 left=100")
+	},
+	
+	// 상담저장
+	save : function(){
+		inno.SendMsg(2);
+		this.callValueClearAll();
+		$("#save").attr("disabled",true);
+	},
+
+	// 녹취연동 변수 초기화
+	callValueClearAll : function (){
+		$("#g_sCallType").val("");
+		$("#sInnoRecKey").val("");
+		$("#g_DialNo").val("");
+		$("#p3").val("");
+		$("#p5").val("");
+		$("#p6").val("");
+		$("#p7").val("");
+		$("#p8").val("");
+		$("#p9").val("");	
+		$("#txtTel").val("");
+	},
+	
+	// 로그인 정보 자동설정
+	getLoginData : function (){
+		$.ajax({
+			type:"GET",
+			url:"http://"+devHost+"/TEST/loginData.asp?sUSER_ID="+$('#userID').val()+"&sUSERPWD="+$('#userPWD').val(),
+			dataType:"jsonp",
+			success:function(json){
+				/**
+				i:1
+				rUSER_ID:MPC002
+				rUSER_NM:안홍민
+				rUSERLINE_NO:0759
+				rUSERTEL_ID:test02
+				*/
+				var str="";
+				var count = "";
+				for (var i in json) {
+					var temp = json[i];
+					if(temp){
+						if(i=="count"){
+							count = temp;
+						}
+						if(i=="rUSER_ID"){
+							$("#userID").val(temp);
+							$("#innoID").val(temp);
+						}
+						if(i=="rUSERTEL_ID"){
+							$("#nID").val(temp);
+						}
+						if(i=="rUSERLINE_NO"){
+							$("#nExt").val(temp);
+						}
+						str += i+":"+temp+"\n";
+					}
+				}
+				if(count=="0"){
+					alert("사용자정보를 조회할 수 없습니다.");	
+					$("#userID").val("");
+					$("#userPWD").val("");
+					$("#innoID").val("");
+					$("#nID").val("");
+					$("#nExt").val("");
+				}				
+			},
+			error:function(err){
+				alert("error");
+			}
+		});
+	},
+	
+	loadingLayer:function(selector){
+		var ret = {
+            left: $(selector).offset().left,
+            top : $(selector).offset().top,
+            height: $(selector).outerHeight(),
+            width:  $(selector).outerWidth()
+        };
+		var divId = "loading";
+		var newDiv = document.createElement("div");
+        newDiv.id = divId;
+        document.body.appendChild(newDiv);
+        $("#" + divId).css("visibility", "visible");
+        $("#" + divId).css("position", "absolute");
+        $("#" + divId).css("text-align", "center"); 
+        $("#" + divId).css("top", ret.top);
+        $("#" + divId).css("left", ret.left);
+        $("#" + divId).css("width", ret.width);
+        $("#" + divId).css("height", ret.height);
+        $("#" + divId).addClass("bg_gray");
+        $("#" + divId).show();
+        $("#" + divId).html('<table style="width:100%; height: 100%" ><tbody><tr><td valign="middle" style="text-align:center;"><img src="./images/ajax_loading.gif"/></td></tr></tbody></table>');
+	},
+	
+	// 로딩레이어 숨김
+	loadingLayerHide:function(){
+		var divId = "loading";
+		$("#" + divId).hide();
+	},
+	
+	test : function(){
+	}
+};
+
+//---------------------------------------------------------------------- 이노 녹취 함수모음
+var inno = {
+	/**
+	 * 상담원 로그인
+	 * 상당원 프로그램에 상담원 로그인 호출함
+	 */
+	 Login : function(){
+		var s = "ho=" + host + "\n"
+			+ "po=" + port + "\n"
+			+ "sh=" + shost + "\n"
+			+ "sp=" + sport + "\n"
+			+ "to=" + timeout + "\n"
+			+ "cm=10\n"
+			+ "ui=" + $("#innoID").val() + "\n"	/* 상담원 아이디 */
+			+ "pn=" + $("#nExt").val() + "\n"	/* 내선번호 */
+			+ "p1=" + $("#nID").val() + "\n";	/* 상담원 이름 */
+			
+		mng.logMsg("inno.Login()");
+		var r = ir2capi.SendMessage(0, s, 0);
+		mng.logMsg("ir2capi.SendMessage(0, "+s+", 0) > "+r);
+		if (r != 0) {
+			alert("오류: " + inno.getErrorMsg(r));
+			logout(false);
+		} else {
+			allBtnDisabled();
+			$("#logout").attr("disabled",false);
+			$("#makecall").attr("disabled",false);
+			$("#ready").attr("disabled",false);
+			$("#notready").attr("disabled",false);
+			$("#notready2").attr("disabled",false);
+			$("#txtStatus").val("로그인");
+
+			// 녹취 로그인 성공시 로그인 정보 비활성화
+			mng.textReadOnlyT("#userID");
+			mng.textReadOnlyT("#userPWD");
+//			mng.textReadOnlyT("#innoID");
+//			mng.textReadOnlyT("#nID");
+			mng.textReadOnlyT("#nExt");
+//			mng.textReadOnlyT("#nPW");
+			
+			mng.loadingLayerHide();
+			
+			// 녹취 로그인 성공시 전화걸기 / 상담정보 저장 table 활성화
+			$("#innoTable").show();
+			$("#ctiTable").show();
+		}
+	},
+
+	/**
+	 * 상담원 로그아웃
+	 * 상담원 프로그램 종료 시 호출함
+	 */
+	Logout : function(){
+		var s = "ho=" + host + "\n"
+			+ "po=" + port + "\n"
+			+ "sh=" + shost + "\n"
+			+ "sp=" + sport + "\n"
+			+ "to=" + timeout + "\n"
+			+ "cm=11\n"
+			+ "ui=" + $("#innoID").val() + "\n"		/* 상담원 아이디 */
+			+ "pn=" + $("#nExt").val() + "\n";		/* 내선번호 */
+		var r = ir2capi.SendMessage(0, s, 0);
+		mng.logMsg("inno.Logout()");
+		mng.logMsg("ir2capi.SendMessage(0, "+s+", 0) > "+r);
+		if (r != 0) {
+			alert("오류: " + inno.getErrorMsg(r));
+		}
+
+		// 녹취 로그아웃시 로그인 정보 초기화
+		mng.textReadOnlyF("#userID");
+		mng.textReadOnlyF("#userPWD");
+		$("#userID").val("");
+		$("#userPWD").val("");
+		$("#innoID").val("");
+		$("#nID").val("");
+		$("#nExt").val("");
+		
+//		mng.textReadOnlyF("#innoID");
+//		mng.textReadOnlyF("#nID");
+		mng.textReadOnlyF("#nExt");
+//		mng.textReadOnlyF("#nPW");
+		
+		// 녹취 로그아웃시 전화걸기 / 상담정보 저장 table 비활성화
+		$("#innoTable").hide();
+		$("#ctiTable").hide();
+	},
+
+	/**
+	 * 에러메시지
+	 */
+	getErrorMsg : function(e){
+	    switch (e){
+		    case -1:
+		            return "시스템 오류입니다.";
+		    case 0:
+		            return "성공적으로 작업이 이루어졌습니다.";
+		    case 1: //eIRP_notFoundUser
+		            return "사용자를 찾을 수 없습니다."
+		    case 2: /* eIRP_invalidPassword, */
+		            return "비밀번호 오류";
+		    case 3: /* eIRP_serverError, */
+		            return "서버에러";
+		    case 4: /* eIRP_notFoundCall, */
+		            return "호를 찾을 수 없습니다.";
+		    case 5: /* eIRP_notFoundRealTimeCall, */
+		            return "실시간 청취: 호를 찾을 수 없습니다.";
+		    case 6: /* eIRP_notFoundFile, */
+		            return "파일을 찾을 수 없습니다.";
+		    case 7: /* eIRP_notFoundSystem, */
+		            return "시스템을 찾을 수 없습니다.";
+		    case 8: /* eIRP_mixingStillWorking, */
+		            return "호가 믹싱중에 있습니다.";
+		    case 9: /* eIRP_invalidValue, */
+		            return "잘못된값입니다";
+		    case 10: /* eIRP_throwException, */
+		            return "Exception이 발생하였습니다.";
+		    case 11: /* eIRP_alreadyRunning, */
+		            return "이미 실행중에 있습니다.";
+		    case 12: /* eIRP_stillRunning, */
+		            return "아직 실행중입니다.";
+		    case 13: /* eIRP_notEmpty, */
+		            return "빈값이 아닙니다.";
+		    case 14: /* eIRP_notRunning, */
+		            return "실행중이 아닙니다";
+		    case 15: /* eIRP_dbmsError, */
+		            return "DBMS 오류가 발생하였습니다.";
+		    case 16: /* eIRP_timeout, */
+		            return "시간이 초과 되었습니다.";
+		    case 17: /* eIRP_exceedCapability */
+		            return "용량이 초과 되었습니다.";
+		    case 18:
+		            return "중복 로그인 시도입니다.";
+		    case 19:
+		            return "전화단말을 찾을 수 없습니다.";
+		    case 20:
+		            return "네트워크에 오류가 발생하였습니다.";
+		    case 21:
+		            return "알 수 없는 메시지를 수신했습니다.";
+		    case 22:
+		            return "네트워크 연결이 리셋되었습니다.";
+		    case 23:
+		            return "서버로부터 강제 로그아웃 메시지를 받았습니다.";
+		    default:
+		            return "정의되지 않은 오류코드:" + e;
+		}
+	},
+
+	// 이노 녹취키 생성
+	GetRecKey : function(){
+		var d = new Date();
+	    var year= d.getFullYear();
+	    var mon = (d.getMonth()+1)>9 ? ''+(d.getMonth()+1) : '0'+(d.getMonth()+1);
+	    var day = d.getDate()>9 ? ''+d.getDate() : '0'+d.getDate();
+		var curr_hour = d.getHours();
+		var curr_min = d.getMinutes();
+		var curr_sec = d.getSeconds();
+		var curr_msec = d.getMilliseconds();
+		var temp = curr_hour + "" + curr_min + "" + curr_sec + "" + curr_msec;
+		var sNowTime = year + mon + day + temp.substring(0,7);
+		var sInnoRecKey = $("#innoID").val() + "_" + sNowTime;
+		$("#sInnoRecKey").val(sInnoRecKey);
+	},
+
+	/**
+	 * op
+	 * 0 : 상담원이 고객과 통화가 시작 시 호출함
+	 * 2 : 통화 종료 후(후처리 시) 호출함
+	 */
+	SendMsg : function(op){
+		mng.logMsg("inno.SendMsg("+op+")");
+		
+		var callType = "";			/* 호유형 0:인바운드 / 1:아웃바운드 */
+		var sContactPath;
+		if ($("#g_sCallType").val().substring(0,1) == "O"){
+			callType = "1";
+			sContactPath = "발신";
+		}else{
+			callType = "0";
+			sContactPath = "수신";
+		}
+		
+		var s = "ho=" + host + "\n"
+			+ "po=" + port + "\n"
+			+ "sh=" + shost + "\n"
+			+ "sp=" + sport + "\n"
+			+ "to=" + timeout + "\n"
+			+ "cm=8\n"
+			+ "nx=1\n"
+			+ "pk=" + $("#nExt").val() +"\n"
+			+ "rk=1\n"
+			+ "op=" + op + "\n"						// 통화연결시(0), 종료시(2) 
+			+ "pn=" + $("#nExt").val() +"\n"		// 내선번호 (상담원 내선번호)
+			+ "cn=" + $("#g_DialNo").val() +"\n"	// 상대방번호
+			+ "ct=" + callType +"\n"				// 호유형 ( 0:인바운드 / 1:아웃바운드 )
+			+ "p0=" + $("#sInnoRecKey").val() +"\n"
+			+ "p1=" + $("#sInnoRecKey").val() +"\n"	// 상담저장키
+			+ "p2=" + $("#g_DialNo").val() +"\n"
+			+ "p3=" + $("#p3").val() +"\n"
+			+ "p4=" + sContactPath + "|" + $("#g_DialNo").val() +"\n"
+			+ "p5=" + $("#p5").val() +"\n"
+			+ "p6=" + $("#p6").val() +"\n"
+			+ "p7=" + $("#p7").val() +"\n"
+			+ "p8=" + $("#p8").val() +"\n"
+			+ "p9=" + $("#p9").val() +"\n";
+
+		var r = ir2capi.SendMessage(0, s, 0);
+		mng.logMsg("ir2capi.SendMessage(0, "+s+", 0) > "+r);
+		
+		/**
+		녹취 연동 로그 작성
+		B : 녹취 연동 파라미터
+		C : 녹취 연동 리턴값
+		D : 현재 로그인한 USER ID
+		*/		
+		$.ajax({
+			type:"GET",
+			url:"http://"+devHost+"/TEST/data.asp?B="+encodeURIComponent(s)+"&C="+r+"&D="+$("#userID").val(),
+			dataType:"jsonp",
+			success:function(json){
+				alert(json.message);
+			},
+			error:function(err){
+				alert("error");
+			}
+		});
+		
+		/*
+		 setTimeout(function(){
+			inno.SendMsg_Result();
+	     },10*1000);
+		*/
+	},
+
+	// 녹취 연동 여부 체크 기존 텔레웹에서는 10초마다 체크함
+	SendMsg_Result : function(){
+			
+		if( $("#txtStatus").val() == "통화중"){		
+
+			mng.logMsg("inno.SendMsg_Result start");
+
+			var sChkRec;
+			var sChkRecResult;
+			sChkRec = "ho=" + host + "\n"
+					+ "po=" & port + "\n"
+				    + "to=" & timeout + "\n"
+			        + "nx=1\n"
+			        + "pk=" + $("#nExt").val() +"\n" ;
+
+			sChkRecResult = ir2capi.GetCallInfo(sChkRec,0);
+			mng.logMsg("ir2capi.GetCallInfo("+sChkRec+", 0) > "+sChkRecResult);
+			
+			sChkRecResult = sChkRecResult + "";
+		
+			// 네트워크 오류이면 한번 더 실행. 
+			if( sChkRecResult == "20" ){
+				sChkRec = "ho=" + host + "\n"
+						+ "po=" & port + "\n"
+					    + "to=" & timeout + "\n"
+				        + "nx=1\n"
+				        + "pk=" + $("#nExt").val() +"\n" ;
+		
+				sChkRecResult = ir2capi.GetCallInfo(sChkRec,0);
+				mng.logMsg("ir2capi.GetCallInfo("+sChkRec+", 0) > "+sChkRecResult);
+		
+				sChkRecResult = sChkRecResult + "";
+			}
+			
+			if( sChkRecResult != "0" && $("#txtStatus").val() == "통화중"){
+				alert("녹취중이 아님!!!! > " + inno.getErrorMsg(sChkRecResult));
+			}else{
+				var rstr;
+				rstr = "고객번호: "  + ir2capi.GetValue("PEER_NO") +"\r\n" ;
+				rstr += "호유형: " + (ir2capi.GetValue("CALL_TYPE") == "0" ?  "인바운드" : "아웃바운드") +"\r\n" ;
+				rstr += "발신번호: "  + ir2capi.GetValue("CALLING_NO") +"\r\n" ;
+				rstr += "착신번호: "  + ir2capi.GetValue("CALLED_NO") +"\r\n" ;
+				rstr += "사용자: "  + ir2capi.GetValue("USER") +"\r\n" ;
+				rstr += "내선번호: "  + ir2capi.GetValue("PHONE_NO") +"\r\n" ;
+				rstr += "녹취상태: "  + (ir2capi.GetValue("STATUS") == "1" ?  "녹음중" : "통화중") +"\r\n" ;
+				rstr += "녹취ID: "  + ir2capi.GetValue("CALLID") +"\r\n" ;
+				rstr += "화면구분코드: "  + ir2capi.GetValue("VAR1") +"\r\n" ;
+				rstr += "개인구분코드: "  + ir2capi.GetValue("VAR2") +"\r\n" ;
+				rstr += "주민/법인번호: "  + ir2capi.GetValue("VAR3") +"\r\n" ;
+				rstr += "대출번호: "  + ir2capi.GetValue("VAR4") +"\r\n" ;
+				rstr += "견적번호: "  + ir2capi.GetValue("VAR5") +"\r\n" ;
+				alert(rstr);
+				alert("녹취시작 성공");
+			}
+		}
+	}
+};
+
+
+//---------------------------------------------------------------------- cti 함수모음
+
+// cti 세션 유지
+function run(){
+	// cti 로그인 한 경우에만 체크
+	if($("#login").attr("disabled") == "disabled"){
+		icsp.CheckOtherLogin();
+		icsp.GetPBXTime();
+		icsp.GetOneEDUValue("ABC");
+		icsp.GetOneADUValue("ABC");	
+	}
+}
+
+function login(){	
+	if($("#innoID").val()==""){
+		$("#userID").focus();
+		alert("로그인후에 이용해주세요 ");
+		return false;
+	}
+
+	mng.loadingLayer("#loginTable");
+	result = icsp.OpenEx($("#nID").val(),$("#nPW").val(),$("#nExt").val());
+	$("#nFunc").val("OpenEx() , "+result);
+	mng.logMsg("login() > icsp.OpenEx("+$("#nID").val()+","+$("#nPW").val()+","+$("#nExt").val()+") : " + result);
+	
+	result =	icsp.Login();
+	mng.logMsg("login() > icsp.Login() : " + result);
+}
+
+function logout(flag){
+	result = icsp.Logout();
+	$("#nFunc").val("Logout() , " + result);
+	mng.logMsg("logout() > icsp.Logout() : " + result);
+	
+	if(flag == false){
+	}else{
+		inno.Logout();
+	}
+	result = icsp.Close();
+	$("#nFunc").val("Close() , " + result);
+	mng.logMsg("logout() > icsp.Close() : " + result);
+}
+
+function makecall(){
+	$("#g_sCallType").val("O1"); 
+	$("#g_DialNo").val($("#txtTel").val());
+	var tempStr;
+	var digit;
+	
+	tempStr = $("#txtTel").val();
+	if(tempStr.substring(0.2)=="02"){
+		tempStr = tempStr.substring(2,tempStr.length-2);
+		$("#txtTel").val(tempStr);
+	}
+	if(tempStr.length>6){
+		digit = 9 + $("#txtTel").val();
+	}else{
+		digit = $("#txtTel").val();
+	}
+	
+	result = icsp.Makecall(digit);
+	$("#nFunc").val("Makecall("+digit+") , "+result);
+	mng.logMsg("makecall() > icsp.Makecall("+digit+") : " + result);
+}
+
+function ready(){
+	result = icsp.Ready();
+	$("#nFunc").val("Ready() , " + result);
+	mng.logMsg("ready() > icsp.Ready() : " + result);
+}
+
+function notready(){
+	var readyFlag = $("#notready2").val();
+	result = icsp.NotReady(readyFlag);
+	$("#nFunc").val("NotReady("+readyFlag+") , "+result)
+	mng.logMsg("notready() > icsp.NotReady("+readyFlag+") : " + result);
+}
+
+function hangup(){
+	result = icsp.Hangup();
+	$("#nFunc").val("Hangup() , "+result);
+	mng.logMsg("hangup() > icsp.Hangup() : " + result);
+}
+
+function hold(){
+	result = icsp.Hold();
+	$("#nFunc").val("Hold() , "+result);
+	mng.logMsg("hold() > icsp.Hold() : " + result);
+}
+
+function unhold(){
+	result = icsp.HoldReconnect();
+	$("#nFunc").val("HoldReconnect() , "+result);
+	mng.logMsg("unhold() > icsp.HoldReconnect() : " + result);
+}
+
+function wrapup(){
+	result = icsp.Wrapup();
+	$("#nFunc").val("Wrapup() , "+result);
+	mng.logMsg("wrapup() > icsp.Wrapup() : " + result);
+}
+
+function answer(){
+	result = icsp.Answer();
+	$("#nFunc").val("Answer() , "+result);
+	mng.logMsg("answer() > icsp.Answer() : " + result);
+}
+
+function transferInit(){
+	var tempStr;
+	var digit;
+	transFlag = true;
+	tempStr = $("#txtTel").val();
+	if(tempStr.substring(0.2)=="02"){
+		tempStr = tempStr.substring(2,tempStr.length-2);
+		$("#txtTel").val(tempStr);
+	}
+	if(tempStr.length>6){
+		digit = 9 + $("#txtTel").val();
+	}else{
+		digit = $("#txtTel").val();
+	}
+	
+	result = icsp.TransferInit(digit);
+	$("#nFunc").val("TransferInit("+digit+") , "+result);
+	mng.logMsg("transferInit() > icsp.TransferInit("+digit+") : " + result);
+}
+
+function transferCancel(){
+	result = icsp.TransferCancel();
+	$("#nFunc").val("TransferCancel() , "+result);
+	mng.logMsg("transferCancel() > icsp.TransferCancel() : " + result);
+}
+
+function transferComplete(){
+	result = icsp.TransferComplete();
+	$("#nFunc").val("TransferComplete() , "+result);
+	mng.logMsg("transferComplete() > icsp.TransferComplete() : " + result);
+}
+
+function conferenceInit(){
+	var tempStr;
+	var digit;
+	confFlag = true;
+	tempStr = $("#txtTel").val();
+	if(tempStr.substring(0.2)=="02"){
+		tempStr = tempStr.substring(2,tempStr.length-2);
+		$("#txtTel").val(tempStr);
+	}
+	if(tempStr.length>6){
+		digit = 9 + $("#txtTel").val();
+	}else{
+		digit = $("#txtTel").val();
+	}
+	result = icsp.ConferenceInit(digit);
+	$("#nFunc").val("ConferenceInit() , "+result);
+	mng.logMsg("conferenceInit() > icsp.ConferenceInit("+digit+") : " + result);
+}
+
+function conferenceCancel(){
+	result = icsp.ConferenceCancel();
+	$("#nFunc").val("ConferenceCancel() , "+result);
+	mng.logMsg("conferenceCancel() > icsp.ConferenceCancel() : " + result);
+}
+
+function conferenceComplete(){
+	result = icsp.ConferenceComplete();
+	$("#nFunc").val("ConferenceComplete() , "+result);
+	mng.logMsg("conferenceComplete() > icsp.ConferenceComplete() : " + result);
+}
+
+function getOneEDUValue(){
+	var field = $("#eduFieldTxt").val();
+	if(field == ""){
+		$("#nFunc").val("Field명을 입력하세요");
+	}
+	result = icsp.GetOneEDUValue(field);
+	$("#eduValueTxt").val(result);
+	mng.logMsg("getOneEDUValue() > icsp.GetOneEDUValue("+field+") : " + result);
+}
+
+function setOneEDUValue(){
+	var field = $("#eduFieldTxt").val();
+	var data = $("#eduValueTxt").val();
+	if(field == ""){
+		$("#nFunc").val("Filed명 입력하세요");	
+	}else if(data==""){
+		$("#nFunc").val("Value를 입력하세요");	
+	}
+	result = icsp.SetOneEDUValue(field,data);
+	mng.logMsg("setOneEDUValue() > icsp.SetOneEDUValue("+field+","+data+") : " + result);
+}
+
+function blindTransfer(){
+	var tempStr;
+	var digit;
+	
+	tempStr = $("#txtTel").val();
+	if(tempStr.substring(0.2)=="02"){
+		tempStr = tempStr.substring(2,tempStr.length-2);
+		$("#txtTel").val(tempStr);
+	}
+	if(tempStr.length>6){
+		digit = 9 + $("#txtTel").val();
+	}else{
+		digit = $("#txtTel").val();
+	}
+	result = "";
+	result = icsp.TransferInit(digit);
+	$("#nFunc").val("BlindTransferInit() , "+result);
+	mng.logMsg("blindTransfer() > icsp.TransferInit("+digit+") : " + result);
+	
+	result = "";
+	result = icsp.TransferComplete();
+	$("#nFunc").val("BlindTransferComplete() , "+result);
+	mng.logMsg("blindTransfer() > icsp.TransferComplete() : " + result);
+}
+
+function allBtnDisabled(){
+	$("#login").attr("disabled",true);
+	$("#logout").attr("disabled",true);
+	$("#makecall").attr("disabled",true);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#blindTransfer").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",true);
+	$("#notready2").attr("disabled",true);
+}
+
+</script>
+
+<SCRIPT LANGUAGE=javascript FOR="icsp" EVENT="OnLogin(oEvtData)">
+/* 교환기에 로그인 되었을 때 이벤트 */
+	mng.logMsg("OnLogin("+oEvtData+")");
+	inno.Login();
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnAuxWork(oEvtData)">
+/* 상담원이 이석 상태일때  */
+ 	mng.logMsg("OnAuxWork("+oEvtData+")");
+ 	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",false);
+	$("#ready").attr("disabled",false);
+	$("#notready").attr("disabled",false);
+	$("#notready2").attr("disabled",false);
+	$("#wrapup").attr("disabled",false);
+	$("#txtStatus").val("이석중");
+</SCRIPT>
+
+<!-- 통화중일 때-->
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnBusy(oEvtData)">
+/* 상담원(나)가 통화중일 때 고객으로부터 호가 들어오면 날아오는 이벤트 #정확하지않음 */
+	mng.logMsg("OnBusy("+oEvtData+")");
+	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#hangup").attr("disabled",false);	
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnConference(oEvtData)">
+	mng.logMsg("OnConference("+oEvtData+")");
+	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#hangup").attr("disabled",false);
+	$("#conferenceCancel").attr("disabled",false);
+	$("#conferenceComplete").attr("disabled",false);
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnConnect(oEvtData)">
+/* 고객과 통화가 연결됐을 시에 이벤트 */
+	mng.logMsg("OnConnect("+oEvtData+")");
+	
+	if(transFlag == true){
+		allBtnDisabled();
+		$("#logout").attr("disabled",false);
+		$("#hangup").attr("disabled",false);
+		$("#transferComplete").attr("disabled",false);		
+		$("#txtStatus").val("통화중");	
+	}else if(confFlag == true){
+		allBtnDisabled();
+		$("#logout").attr("disabled",false);
+		$("#hangup").attr("disabled",false);
+		$("#conferenceComplete").attr("disabled",false);		
+		$("#txtStatus").val("통화중");	
+	}else{
+		allBtnDisabled();
+		$("#logout").attr("disabled",false);
+		$("#hangup").attr("disabled",false);
+		$("#hold").attr("disabled",false);
+		$("#transferInit").attr("disabled",false);
+		$("#conferenceInit").attr("disabled",false);		
+		$("#blindTransfer").attr("disabled",true);
+		$("#txtStatus").val("통화중");
+	}
+// 	if ($("#g_sCallType").val().substring(0,1) == "O"){
+		inno.GetRecKey();
+		inno.SendMsg(0);
+// 	}
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnDisconnect(oEvtData)">
+/* 고객이 전화를 끊었을(거절) 경우 날아오는 이벤트 */
+	mng.logMsg("OnDisconnect("+oEvtData+")");
+	transFlag = false;
+	confFlag = false;
+	
+	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",false);
+	$("#notready").attr("disabled",false);
+	$("#notready2").attr("disabled",false);
+	$("#wrapup").attr("disabled",false);
+	$("#ready").attr("disabled",false);
+	$("#txtStatus").val("후처리중");
+
+	$("#save").attr("disabled",false);
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnDrop(oEvtData)">
+	mng.logMsg("OnDrop("+oEvtData+")");
+	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",false);
+	$("#wrapup").attr("disabled",false);
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnHold(oEvtData)">
+	mng.logMsg("OnHold("+oEvtData+")");
+	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#unhold").attr("disabled",false);	
+	$("#txtStatus").val("보류중");
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnHoldReconnect(oEvtData)">
+	mng.logMsg("OnHoldReconnect("+oEvtData+")");
+	transFlag = false;
+	confFlag = false;
+	
+	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#hangup").attr("disabled",false);
+	$("#hold").attr("disabled",false);
+	$("#transferInit").attr("disabled",false);
+	$("#blindTransfer").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",false);
+	
+	$("#txtStatus").val("통화중");
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnIncomingCall(oEvtData)">
+/* 전화가 걸려왔을 때 이벤트 */
+/* vdu_id^  |call_ref_id^  |monitor^2009  |orig^   |dest^2009  | ani^  |dnis^  |called^  |calltype^  |ctype^  | */
+	mng.logMsg("OnIncomingCall("+oEvtData+")");
+	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#answer").attr("disabled",false);
+	
+	$("#txtStatus").val("호인입");
+	
+	$("#g_sCallType").val("I2");
+	var sDialNo = oEvtData.split("\|")[5].split("^")[1];
+	$("#g_DialNo").val(sDialNo);
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnLogout(oEvtData)">
+/* 로그아웃 시에 날아오는 이벤트 */
+	mng.logMsg("OnLogout("+oEvtData+")");
+	$("#login").attr("disabled",false);
+	$("#logout").attr("disabled",true);
+	$("#makecall").attr("disabled",true);
+	$("#answer").attr("disabled",true);
+	$("#hangup").attr("disabled",true);
+	$("#hold").attr("disabled",true);
+	$("#unhold").attr("disabled",true);
+	$("#transferInit").attr("disabled",true);
+	$("#transferCancel").attr("disabled",true);
+	$("#transferComplete").attr("disabled",true);
+	$("#conferenceInit").attr("disabled",true);
+	$("#conferenceCancel").attr("disabled",true);
+	$("#conferenceComplete").attr("disabled",true);
+	$("#blindTransfer").attr("disabled",true);
+	$("#ready").attr("disabled",true);
+	$("#wrapup").attr("disabled",true);
+	$("#notready").attr("disabled",true);
+	$("#notready2").attr("disabled",true);
+	$("#txtStatus").val("로그아웃");
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnReady(oEvtData)">
+/* 상담원이 대기 상태가 되었을 때 */
+	mng.logMsg("OnReady("+oEvtData+")");
+	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",false);
+	$("#wrapup").attr("disabled",false);
+	$("#notready").attr("disabled",false);
+	$("#notready2").attr("disabled",false);
+	$("#txtStatus").val("대기중");
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnRing(oEvtData)">
+/* 전화걸기 버튼 클릭 시 전화기 벨 울리는 순간 날아오는 이벤트 */
+	mng.logMsg("OnRing("+oEvtData+")");
+	allBtnDisabled();
+	if(transFlag == true){
+		$("#logout").attr("disabled",false);
+		$("#hangup").attr("disabled",false);
+		$("#transferCancel").attr("disabled",false);
+	}else if(confFlag == true){
+		$("#logout").attr("disabled",false);
+		$("#hangup").attr("disabled",false);
+		$("#conferenceCancel").attr("disabled",false);		
+	}else{
+		$("#logout").attr("disabled",false);
+		$("#hangup").attr("disabled",false);
+	}
+	$("#txtStatus").val("발신중");
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnSendData(oEvtData)">
+	mng.logMsg("OnSendData("+oEvtData+")");
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnSessionFailed(oEvtData)">
+	mng.logMsg("OnSessionFailed("+oEvtData+")");
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnServerFailed(oEvtData)">
+	mng.logMsg("OnServerFailed("+oEvtData+")");
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnTransfer(oEvtData)">
+	mng.logMsg("OnTransfer("+oEvtData+")");
+	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#hangup").attr("disabled",false);
+	$("#transferCancel").attr("disabled",false);
+	$("#transferComplete").attr("disabled",false);
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript"  FOR=icsp  EVENT="OnWrapUp(oEvtData)">
+	mng.logMsg("OnWrapUp("+oEvtData+")");
+	allBtnDisabled();
+	$("#logout").attr("disabled",false);
+	$("#makecall").attr("disabled",false);
+	$("#ready").attr("disabled",false);
+	$("#notready").attr("disabled",false);
+	$("#notready2").attr("disabled",false);
+	$("#txtStatus").val("후처리중");
+	
+	//$("#save").attr("disabled",false);
+</SCRIPT>
+
+<script type="text/javascript">
+if (typeof console == "object") {
+	/*
+	console.log("기능 함수모음");
+	for (var i in mng) {
+		var temp = mng[i];
+		if(temp){
+			console.log(i+":"+mng[i]);
+		}
+	}
+	*/
+}
+</script>
+</body>
+</html>
