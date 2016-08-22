@@ -52,7 +52,10 @@ th, td {
 				</tr>
 				<tr>
 					<td>ID</td>
-					<td><input id="userID" name="userID" type="text" size="14"/></td><!--  value="MPC002" -->
+					<td>
+					<input id="userID" name="userID" type="text" size="14"/>
+					<input id="teamCD"type="hidden"/>
+					</td><!--  value="MPC002" -->
 				</tr>
 				<tr>
 					<td>PWD</td>
@@ -138,6 +141,7 @@ th, td {
 				<tr style="display:none;">
 					<td>통화구분 (g_sCallType)</td>
 					<td>
+						<input id="g_CONTACTLOG_ID" type="hidden"/>
 						<input id="g_sCallType" type="text" size="25" value="" style="background-color:rgb(223, 222, 219)" readonly="readonly"/>
 					</td>
 				</tr>
@@ -161,15 +165,9 @@ th, td {
 				</tr>
 				<tr>	
 					<td>
-						<span>상담유형</span>
-					</td><!-- 상담유형 소분류 P5 -->
-					<td><input id="p5" type="text" size="25" value=""/></td>
-				</tr>
-				<tr>	
-					<td>
 						<span>주민번호</span>
 					</td><!-- 주민번호 P6 -->
-					<td><input id="p6" type="text" size="25" value=""/></td>
+					<td><input id="p6" type="text" size="25" value="" maxlength="13"/></td>
 				</tr>
 				<tr style="display:none;">
 					<td>
@@ -185,6 +183,12 @@ th, td {
 					</td><!-- 상담유형 소분류 P8 -->
 					<td><input id="p8" type="text" size="25" value=""/></td>
 				</tr>
+				<tr>	
+					<td>
+						<span>사고번호</span>
+					</td><!-- 상담유형 소분류 P5 -->
+					<td><input id="p5" type="text" size="25" value=""/></td>
+				</tr>				
 				<tr>	
 					<td>
 						<span>증권번호</span>
@@ -283,11 +287,7 @@ window.onload = function init(){
 	$("#ctiTableTr2").hide();
 	$("#log").hide();
 	
-	$("#userID").val("");
-	$("#userPWD").val("");
-	$("#innoID").val("");
-	$("#nID").val("");
-	$("#nExt").val("");
+	mng.clearLoginData();
 	$('#userID').focus();
 };
 
@@ -301,6 +301,12 @@ $(function() {
 		}
 	});
 
+	$("#txtTel").keypress(function(event){
+		if(event.which == 13){
+			makecall();
+		}
+	});
+	
 	$('#userPWD').keypress(function(event){
 		if(event.which == 13){
 			if($('#userID').val()==""){
@@ -316,9 +322,76 @@ $(function() {
 			$('#userPWD').focus();
 		}
 	});
+	
+	$('#p6').keypress(function(event){
+		$('#p6').val(mng.string.formatSsn($('#p6').val()));		
+	});
+	
+	$('#p6').on("blur", function(e){
+		$('#p6').val(mng.string.formatSsn($('#p6').val()));
+	});
+	
+	$("#p6").keyup(mng.event.EVENT_INT);
 });
 
+
+function makeParams(params){
+	var s = '';
+	for (var n in params) {
+		s += n + "=" + params[n] + "&";
+	}
+	s = s.substring(0, s.length-1);
+	return s;
+}
+
 var mng = {
+	clearLoginData : function(){
+		$("#userID").val("");
+		$("#teamCD").val("");
+		$("#userPWD").val("");
+		$("#innoID").val("");
+		$("#nID").val("");
+		$("#nExt").val("");
+	},
+
+	event : {
+		EVENT_INT : function(evt)  {
+			if(!mng.string.isInteger(this.value)) {
+				alert("숫자만 입력가능합니다.");
+				this.value = this.value.replace(/[^0-9]/g, "");
+				return false;
+			}
+			return true;
+		}
+	},
+
+	string : {
+		isInteger : function(str) {
+        	return !str.match(/[^0-9]{1,}/);
+        },
+        
+		formatNumber : function(str) {
+			if(!str) return "";
+			return str.replace(/[^0-9]+/, "");
+		},
+
+		formatSsn : function(str) {
+			if(str == null) return "";
+			str = this.replace(str, "-", "");
+			if(str.length < 7) return str;
+			return  this.left(str, 7) + "000000";
+		},
+			
+		replace : function(str, findStr, replaceStr) {
+			if(!str) return str;
+			return str.replace(new RegExp(findStr,"g"), replaceStr);
+		},
+
+		left : function(str, length) {
+			if(!str) return "";
+			return  str.length >= length  ? str.substring(0, length): str;
+	    }
+	},
 	
 	//---------------------------------------------------------------------- 로그 함수모음
 	//내부 확인 로그 삭제
@@ -351,13 +424,13 @@ var mng = {
 	// 상담저장
 	save : function(){
 		inno.SendMsg(2);
-		this.callValueClearAll();
 		$("#save").attr("disabled",true);
 	},
 
 	// 녹취연동 변수 초기화
 	callValueClearAll : function (){
 		$("#g_sCallType").val("");
+		$("#g_CONTACTLOG_ID").val("");
 		$("#sInnoRecKey").val("");
 		$("#g_DialNo").val("");
 		$("#p3").val("");
@@ -373,7 +446,7 @@ var mng = {
 	getLoginData : function (){
 		$.ajax({
 			type:"GET",
-			url:"http://"+devHost+"/TEST/loginData.asp?sUSER_ID="+$('#userID').val()+"&sUSERPWD="+$('#userPWD').val(),
+			url:"http://"+devHost+"/TEST/data/loginData.asp?sUSER_ID="+$('#userID').val()+"&sUSERPWD="+$('#userPWD').val(),
 			dataType:"jsonp",
 			success:function(json){
 				/**
@@ -401,16 +474,15 @@ var mng = {
 						if(i=="rUSERLINE_NO"){
 							$("#nExt").val(temp);
 						}
+						if(i=="rTEAM_CD"){
+							$("#teamCD").val(temp);
+						}
 						str += i+":"+temp+"\n";
 					}
 				}
 				if(count=="0"){
 					alert("사용자정보를 조회할 수 없습니다.");	
-					$("#userID").val("");
-					$("#userPWD").val("");
-					$("#innoID").val("");
-					$("#nID").val("");
-					$("#nExt").val("");
+					mng.clearLoginData();
 				}				
 			},
 			error:function(err){
@@ -523,11 +595,8 @@ var inno = {
 		// 녹취 로그아웃시 로그인 정보 초기화
 		mng.textReadOnlyF("#userID");
 		mng.textReadOnlyF("#userPWD");
-		$("#userID").val("");
-		$("#userPWD").val("");
-		$("#innoID").val("");
-		$("#nID").val("");
-		$("#nExt").val("");
+		
+		mng.clearLoginData();
 		
 //		mng.textReadOnlyF("#innoID");
 //		mng.textReadOnlyF("#nID");
@@ -623,60 +692,107 @@ var inno = {
 	SendMsg : function(op){
 		mng.logMsg("inno.SendMsg("+op+")");
 		
-		var callType = "";			/* 호유형 0:인바운드 / 1:아웃바운드 */
-		var sContactPath;
-		if ($("#g_sCallType").val().substring(0,1) == "O"){
-			callType = "1";
-			sContactPath = "발신";
-		}else{
-			callType = "0";
-			sContactPath = "수신";
+		// 상담저장키 할당
+		if(op==0){
+			$.ajax({
+				type:"GET",
+				url: "http://"+devHost+"/TEST/data/data0.asp",
+				dataType:"jsonp",
+				async: false,
+				success:function(json){
+					$("#g_CONTACTLOG_ID").val(json.rCONTACTLOG_ID);
+				},
+				error:function(err){
+					$("#g_CONTACTLOG_ID").val("");
+				}
+			});
 		}
 		
-		var s = "ho=" + host + "\n"
-			+ "po=" + port + "\n"
-			+ "sh=" + shost + "\n"
-			+ "sp=" + sport + "\n"
-			+ "to=" + timeout + "\n"
-			+ "cm=8\n"
-			+ "nx=1\n"
-			+ "pk=" + $("#nExt").val() +"\n"
-			+ "rk=1\n"
-			+ "op=" + op + "\n"						// 통화연결시(0), 종료시(2) 
-			+ "pn=" + $("#nExt").val() +"\n"		// 내선번호 (상담원 내선번호)
-			+ "cn=" + $("#g_DialNo").val() +"\n"	// 상대방번호
-			+ "ct=" + callType +"\n"				// 호유형 ( 0:인바운드 / 1:아웃바운드 )
-			+ "p0=" + $("#sInnoRecKey").val() +"\n"
-			+ "p1=" + $("#sInnoRecKey").val() +"\n"	// 상담저장키
-			+ "p2=" + $("#g_DialNo").val() +"\n"
-			+ "p3=" + $("#p3").val() +"\n"
-			+ "p4=" + sContactPath + "|" + $("#g_DialNo").val() +"\n"
-			+ "p5=" + $("#p5").val() +"\n"
-			+ "p6=" + $("#p6").val() +"\n"
-			+ "p7=" + $("#p7").val() +"\n"
-			+ "p8=" + $("#p8").val() +"\n"
-			+ "p9=" + $("#p9").val() +"\n";
-
-		var r = ir2capi.SendMessage(0, s, 0);
-		mng.logMsg("ir2capi.SendMessage(0, "+s+", 0) > "+r);
-		
-		/**
-		녹취 연동 로그 작성
-		B : 녹취 연동 파라미터
-		C : 녹취 연동 리턴값
-		D : 현재 로그인한 USER ID
-		*/		
-		$.ajax({
-			type:"GET",
-			url:"http://"+devHost+"/TEST/data.asp?B="+encodeURIComponent(s)+"&C="+r+"&D="+$("#userID").val(),
-			dataType:"jsonp",
-			success:function(json){
-				alert(json.message);
-			},
-			error:function(err){
-				alert("error");
+		if($("#g_CONTACTLOG_ID").val() != "" ){
+			var callType = "";			/* 호유형 0:인바운드 / 1:아웃바운드 */
+			var sContactPath;
+			if ($("#g_sCallType").val().substring(0,1) == "O"){
+				callType = "1";
+				sContactPath = "발신";
+			}else{
+				callType = "0";
+				sContactPath = "수신";
 			}
-		});
+			
+			var s = "ho=" + host + "\n"
+				+ "po=" + port + "\n"
+				+ "sh=" + shost + "\n"
+				+ "sp=" + sport + "\n"
+				+ "to=" + timeout + "\n"
+				+ "cm=8\n"
+				+ "nx=1\n"
+				+ "pk=" + $("#nExt").val() +"\n"
+				+ "rk=1\n"
+				+ "op=" + op + "\n"						// 통화연결시(0), 종료시(2) 
+				+ "pn=" + $("#nExt").val() +"\n"		// 내선번호 (상담원 내선번호)
+				+ "cn=" + $("#g_DialNo").val() +"\n"	// 상대방번호
+				+ "ct=" + callType +"\n"				// 호유형 ( 0:인바운드 / 1:아웃바운드 )
+				+ "p0=" + $("#sInnoRecKey").val() +"\n"
+				+ "p1=" + $("#g_CONTACTLOG_ID").val() +"\n"	// 상담저장키
+				+ "p2=" + $("#g_DialNo").val() +"\n"
+				+ "p3=" + $("#p3").val() +"\n"
+				+ "p4=" + sContactPath + "|" + $("#g_DialNo").val() +"\n"
+				+ "p5=" + $("#p5").val() + "|" + $("#p9").val() +"\n"
+				+ "p6=" + $("#p6").val() +"\n"
+				+ "p7=" + $("#p7").val() +"\n"
+				+ "p8=" + $("#p8").val() +"\n"
+				+ "p9=\n";// + $("#p9").val() +
+
+			var r = ir2capi.SendMessage(0, s, 0);
+			mng.logMsg("ir2capi.SendMessage(0, "+s+", 0) > "+r);
+
+			// 녹취 연동 로그 작성
+			var url = '';
+			var param = {};
+			if(op==0){
+				param["CONTACTLOG_ID"] = $("#g_CONTACTLOG_ID").val();
+				param["CONTACTAGENT_ID"] = encodeURIComponent($("#userID").val());
+				param["TEAM_CD"] = encodeURIComponent($("#teamCD").val());
+				param["TELCONTACT"] = $("#g_DialNo").val();
+				param["INNO_REC_KEY"] = $("#sInnoRecKey").val();
+				param["CHANNEL_CD"] = ( callType=="1" ? 'OUTBOUND' : 'INBOUND' );
+				param["USERLINE_NO"] = $("#nExt").val();
+				var params = ( makeParams(param)=='' ? '' : '?'+makeParams(param) );
+				if(params!=''){
+					url = "http://"+devHost+"/TEST/data/data1.asp"+params;
+				}
+			}else{
+				param["CONTACTLOG_ID"] = $("#g_CONTACTLOG_ID").val();
+				param["TELCUST_NM"] = encodeURIComponent($("#p3").val());
+				param["SOCIAL_ID"] = encodeURIComponent($("#p6").val());
+				param["POLICY_NO"] = encodeURIComponent($("#p9").val());
+				param["ACCIDENT_NO"] = encodeURIComponent($("#p5").val());
+				param["INNO_REC_KEY"] = $("#sInnoRecKey").val();
+				var params = ( makeParams(param)=='' ? '' : '?'+makeParams(param) );
+				if(params!=''){
+					url = "http://"+devHost+"/TEST/data/data2.asp"+params;
+				}
+			}
+
+			if(url!=''){
+				$.ajax({
+					type:"GET",
+					url: url,
+					dataType:"jsonp",
+					async: false,
+					success:function(json){
+						alert(json.message);
+					},
+					error:function(err){
+						alert("error");
+					}
+				});
+			}
+
+			if(op==2){
+				mng.callValueClearAll();
+			}
+		}
 		
 		/*
 		 setTimeout(function(){
@@ -769,8 +885,12 @@ function login(){
 	$("#nFunc").val("OpenEx() , "+result);
 	mng.logMsg("login() > icsp.OpenEx("+$("#nID").val()+","+$("#nPW").val()+","+$("#nExt").val()+") : " + result);
 	
-	result =	icsp.Login();
+	result = icsp.Login();
 	mng.logMsg("login() > icsp.Login() : " + result);
+	if(result == "0"){
+		alert("내선 및 CTI 아이디 확인해주세요");
+		location.reload(true);
+	}
 }
 
 function logout(flag){

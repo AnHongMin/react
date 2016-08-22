@@ -7,7 +7,7 @@
 	'오라클(테스트DB) 연결
 	Set dbconn = Server.CreateObject("ADODB.Connection")	'ODBC로 DB 연결
 	dbconn.connectiontimeout = 600
-	dbconn.Open  "DSN=XXX;uid=XXX;pwd=XXX"	'ODBC DB 접속
+	dbconn.Open  "DSN=xxx;uid=xxx;pwd=xxx"	'ODBC DB 접속
 	'=========== 오라클 접속 =====================================================
 
 	Set objCmd = Server.CreateObject("ADODB.Command")
@@ -19,10 +19,10 @@
 	Dim sUSERPWD
 
 	Dim rUSER_ID
-	Dim rUSER_NM
 	Dim rUSERLINE_NO
 	Dim rUSERTEL_ID
 	Dim rPBXAGENT_ID
+	Dim rTEAM_CD
 	
 	sCallback = Request.QueryString("callback") 		
 	sUSER_ID = Request("sUSER_ID")
@@ -36,10 +36,10 @@
 	pErr = cEnc.TWEncrypt(sUSERPWD, sEncryptPwd) 
 
    	strSql =	"SELECT   UPPER(USER_ID) AS USER_ID, " &_
-   				"         USER_NM, "&_
 		        "         USERLINE_NO, "&_
 		        "         USERTEL_ID, "&_
-		        "         PBXAGENT_ID "&_
+		        "         PBXAGENT_ID, "&_
+		        "         TEAM_CD "&_
 				" FROM SS_USER "&_
 				" WHERE USER_ID = UPPER('"&sUSER_ID&"')"&_
 				" AND USERPWD = '"&sEncryptPwd&"'"				
@@ -54,11 +54,10 @@
 		i = 0	
 		Do Until rs.eof
 			rUSER_ID = rs("USER_ID") 
-			rUSER_NM = rs("USER_NM")
 			rUSERLINE_NO = rs("USERLINE_NO")
 			rUSERTEL_ID = rs("USERTEL_ID")
 			rPBXAGENT_ID = rs("PBXAGENT_ID")
-			
+			rTEAM_CD = rs("TEAM_CD")
 			rs.MoveNext
 			i = i + 1
 		Loop
@@ -68,4 +67,4 @@
 	dbconn.Close
 	Set dbconn = Nothing 
 %>
-<%=sCallback%>({"count":"<%=i%>","rUSER_ID":"<%=rUSER_ID%>","rUSER_NM":"<%=rUSER_NM%>","rUSERLINE_NO":"<%=rUSERLINE_NO%>","rUSERTEL_ID":"<%=rUSERTEL_ID%>","rPBXAGENT_ID":"<%=rPBXAGENT_ID%>"});
+<%=sCallback%>({"count":"<%=i%>","rUSER_ID":"<%=rUSER_ID%>","rUSERLINE_NO":"<%=rUSERLINE_NO%>","rUSERTEL_ID":"<%=rUSERTEL_ID%>","rPBXAGENT_ID":"<%=rPBXAGENT_ID%>","rTEAM_CD":"<%=rTEAM_CD%>"});
