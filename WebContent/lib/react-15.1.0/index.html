@@ -4,6 +4,27 @@
 <meta charset="UTF-8" />
 <title></title>
 <script type="text/javascript">
+// 객체리터럴
+var apple = {
+    type: "macintosh",
+    color: "red",
+    getInfo: function () {
+        return this.color + ' ' + this.type + ' apple';
+    }
+};
+console.log(apple.getInfo());
+// 생성자
+function Apple (type) {
+	this.type = type;
+	this.color = "red";
+	this.getInfo = function() {
+		return this.color + ' ' + this.type + ' apple';
+	};
+}
+var test1 = new Apple("test1");
+var test2 = new Apple("test2");
+console.log(test1.getInfo());
+console.log(test2.getInfo());
 </script>
 </head>
 <body>
