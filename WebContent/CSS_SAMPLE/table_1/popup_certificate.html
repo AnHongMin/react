@@ -1,0 +1,366 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"   lang="ko" xml:lang="ko">
+<head>
+    <title>체크박스와 라디오버튼 마스터</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+    /* 공통영역 */
+    body,input,select,textarea{ font-family:'Dotum',돋움, Verdana, sans-serif ; font-size:12px; line-height:1.5em; color:#222222; -webkit-text-size-adjust:none; }
+    html,body { margin:0; }
+    body{background-color:#fff;word-break:break-all;}
+    form, h1, h2, h3, h4, h5, h6, ul, ol, dl, li, dt, dd, p { margin:0; padding:0;  }
+    h1, h2, h3, h4, h5, h6 { font-size:12px; }
+    ol, ul, li { list-style:none;}
+    hr { display:none; }
+    table { empty-cells:show; border-collapse:collapse; table-layout:fixed }
+    table th, table td {padding:0; margin:0;}
+    a:link, a:visited	 {color:#696969; text-decoration:none;}
+    a:active, a:hover, a:focus	{ color:#000000; text-decoration:none;}
+
+    em {font-style:normal; }
+    img {border:0; vertical-align:top; }
+    img.mdl { vertical-align:middle; margin-bottom:1px;}
+    label img {vertical-align:middle; margin-bottom:2px;}
+    iframe, fieldset { margin:0; padding:0; border:0px; }
+    legend {visibility:hidden;overflow:hidden;width:0;height:0;font-size:0;line-height:0;background-color:transparent;}
+    caption {visibility:hidden;overflow:hidden;width:0;height:0;font-size:0;line-height:0;background-color:transparent;}
+    
+    .pop_wrapper input.chk {vertical-align:middle; line-height:1.5em; margin:0; padding:0;}
+    .pop_wrapper input.rdo {vertical-align:middle; line-height:1.5em; margin:0; padding:0;}
+    .pop_wrapper input.txt {vertical-align:middle; width:100%; border:1px solid #cecece}
+    .pop_wrapper textarea {border:1px solid #cecece}
+
+    .pop_wrapper {padding:20px; margin:0 auto; width:850px;}
+    .pop_wrapper .popcont {background-color:#fff; border:1px solid #949494;}
+    .pop_wrapper h1 {background-color:#c9e3f4; font-size:16px; font-weight:bold; color:#111111; text-align:center; padding:27px 0;}
+    .pop_wrapper h2 {font-size:14px; font-weight:bold; padding:0 15px;}
+    .pop_wrapper h3 {background:url(images/blt_tit01.gif) left 2px no-repeat; padding-left:17px; font-size:14px; font-weight:bold;}
+    .pop_wrapper .tit01 {width:100%; padding:13px 0 7px 0; position:relative;}
+    .pop_wrapper .tit01:after {content:"";display:block;clear:both}
+    .pop_wrapper .tit01 h2 {float:left;}
+    .pop_wrapper .tit01 > span {float:right; margin-right:15px; background:url(images/blt_guide.gif) right center no-repeat; padding-right:16px; cursor:pointer;}
+    .pop_wrapper .tit02 {width:100%; padding:20px 0 12px 0;}
+    .pop_wrapper .tit02 dl {margin:5px 0 0 15px;}
+    .pop_wrapper .tit02 dl:after {content:"";display:block;clear:both}
+    .pop_wrapper .tit02 dl dt {float:left; font-size:13px; font-weight:bold;}
+    .pop_wrapper .tit02 dl dd {float:left; margin-left:15px;}
+    .pop_wrapper .tit02 dl dd label {float:left; margin:0 3px 0 0; vertical-align:middle;}
+    .pop_wrapper .tit02 dl dd input.chk {float:left; margin:2px 5px; 0 0;}
+    .pop_wrapper .tit02 dl dd input.txt {width:100px; height:17px; vertical-align:top; padding:0 5px; margin:-2px 5px 0 5px;}
+
+    .pop_wrapper .tbl_type01, .pop_wrapper .tbl_type02 {width:100%;}
+    .pop_wrapper .tbl_type01, .pop_wrapper .tbl_type02 {border-top:1px solid #949494;}
+    .pop_wrapper .tbl_type01 th, .pop_wrapper .tbl_type02 th {border-left:1px solid #949494; border-bottom:1px solid #949494; font-weight:normal; padding:4px 15px 3px 15px;}
+    .pop_wrapper .tbl_type01 td {border-left:1px solid #949494; border-bottom:1px solid #949494; padding:4px 15px 3px 15px;}
+    .pop_wrapper .tbl_type02 td {border-left:1px solid #949494; border-bottom:1px solid #949494; padding:3px 15px 3px 15px;}
+    .pop_wrapper .tbl_type01 th {background-color:#eaf6fe; text-align:left;}
+    .pop_wrapper .tbl_type01 td {text-align:left;}
+    .pop_wrapper .tbl_type01 tr > th:first-child {border-left:none;}    
+    .pop_wrapper .tbl_type02 thead th {background-color:#dddddd; text-align:center;}
+    .pop_wrapper .tbl_type02 thead th.np {padding-left:2px; padding-right:2px;}
+    .pop_wrapper .tbl_type02 tbody th {background-color:#f6f6f6; text-align:center;}
+    .pop_wrapper .tbl_type02 td {text-align:center;}
+    .pop_wrapper .tbl_type02 td.lt {text-align:left; padding-top:3px;}
+    .pop_wrapper .tbl_type02.tbl_chk td.lt {padding:6px 15px 5px 15px;}
+    .pop_wrapper .tbl_type02 tr > th:first-child {border-left:none;}
+    .pop_wrapper .tbl_type02.tbl_chk tr > td:first-child {border-left:none;}
+    .pop_wrapper .tbl_type02 th span {display:block; line-height:1.1em; height:25px; margin-top:2px;}
+    .pop_wrapper .tbl_type02 th span.one {padding-top:5px; height:20px;}
+    .pop_wrapper .tbl_type02 .form {border-bottom:none; padding:0;}
+    .pop_wrapper .tbl_type02 .form label {display:block; background-color:#dddddd; border-bottom:1px solid #949494; text-align:center; padding:6px 15px 5px 15px;}
+    .pop_wrapper .tbl_type02 .form > div {padding:5px 15px;}
+    .pop_wrapper .tbl_type02 textarea {width:100%; height:50px; margin-bottom:5px;}
+    .pop_wrapper .tbl_type02 .form textarea {height:90px; margin:0;}
+    .pop_wrapper p.txt01 {color:#676767;}
+    .pop_wrapper .popbtn {padding-top:15px; text-align:center;}
+    .pop_wrapper .popbtn .btn {display:inline-block; background-color:#da281c; color:#fff; font-weight:bold; padding:6px 25px 5px 25px;}
+    
+    .pop_wrapper .tit01 .infobox {position:absolute; right:120px; top:25px; background:url(images/box_info_btm.png) left bottom no-repeat; width:608px; padding-bottom:27px; display:none;}
+    .pop_wrapper .tit01 .infobox .boxin {background:url(images/box_info_top.png) left top no-repeat; width:608px; padding-top:20px;}
+    .pop_wrapper .tit01 .infobox .cont {background:url(images/box_info.png) left top repeat-y; width:560px; padding:10px 24px;}
+    .pop_wrapper .tit01 .infobox .popbtn {padding-top:10px;}
+    .pop_wrapper .tit01 .infobox .popbtn .btn {background-color:#666666;}
+    .pop_wrapper .tit01 .infobox h3 {margin:3px 0 12px 0;}
+    .pop_wrapper .tit01 .infobox ul {background-color:#fafafa; border:1px solid #d5d6d6; padding:12px 14px;}
+    .pop_wrapper .tit01 .infobox ul li {background:url(images/blt_tit02.gif) left 6px no-repeat; padding-left:8px; font-size:13px;}
+    .pop_wrapper .tit01 .infobox ul li > span {color:#666666; padding-left:120px;}
+    </style>
+</head>
+<body>
+    <div class="pop_wrapper">
+        <div class="popcont">
+            <h1>체크박스와 라디오버튼 마스터</h1>
+
+            <table class="tbl_type01">
+                <caption>체크박스와 라디오버튼 마스터</caption>
+                <colgroup>
+                    <col width="16%" />
+                    <col width="34%" />
+                    <col width="16%" />
+                    <col width="34%" />
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <th scope="row">회사명</th>
+                        <td>주식회사</td>
+                        <th scope="row">대상</th>
+                        <td>체크박스와 라디오를 두려워하는자!</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">대표자</th>
+                        <td>한큐</td>
+                        <th scope="row" rowspan="2">교육내용</th>
+                        <td rowspan="2">체크박스, 라디오버튼<br />더이상 두려워 말라</td>
+                    </tr>
+                    <tr>
+                        <th scope="row">교육일자</th>
+                        <td>2016년 10월 1일 토요일</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tit01">
+                <h2>1.교육대상</h2>
+                <span class="btn_info">도움말</span>
+                <!-- 도움말 레이어 -->
+                <div class="infobox">
+                    <div class="boxin">
+                        <div class="cont">
+                            <h3>화면 개발 설명</h3>
+                            <ul>
+                                <li>교육대상 위 내용은 화면이 뜨자마자 테이블1에서 읽어와야하며 JSTL 사용 </li>
+                                <li>교육대상항목 필수</li>
+                                <li>체크박스 필수아님</li>
+                                <li>기타를 체크시 기타내용 필수 아님</li>
+                                <li>기타에 내용을 적고 다른 체크박스 클릭시 내용 초기화<br />
+                                <span>ex) 기타에 욕을 쓰지 마시오</span></li>
+                                <li>라디오버튼 필수, 건의사항 필수 아님</li>
+                                <li>체크박스는 DB에서 가져오기때문에 유동적으로 늘어남</li>
+                                <li>라디오버튼은 DB에서 가져오기때문에 유동적으로 늘어남</li>
+                                <li>여러분의 고민, 기타 건의 사항 최대 1000자 제한</li>
+                                <li>나이, 1+1항목 숫자만 적게</li>
+                                <li>저장 후 메시지 호출 하고 저장한 결과값을 보여주는 화면 호출</li>
+                            </ul>
+                            <div class="popbtn">
+                                <a href="#none" class="btn">닫기</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- //도움말 레이어 -->
+            </div>
+            <table class="tbl_type02">
+                <caption>체크박스와 라디오버튼 마스터</caption>
+                <colgroup>
+                    <col width="16%" />
+                    <col width="34%" />
+                    <col width="16%" />
+                    <col width="34%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th scope="col">구분</th>
+                        <th scope="col">소속</th>
+                        <th scope="col">직위</th>
+                        <th scope="col">성명</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th scope="row"><label for="txt1">학생</label></th>
+                        <td><input type="text" id="txt1_1" class="txt" /></td>
+                        <td><input type="text" id="txt1_2" class="txt" /></td>
+                        <td><input type="text" id="txt1_3" class="txt" /></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="txt2">취준생</label></th>
+                        <td><input type="text" id="txt2_1" class="txt" /></td>
+                        <td><input type="text" id="txt2_2" class="txt" /></td>
+                        <td><input type="text" id="txt2_3" class="txt" /></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="txt3">개발자</label></th>
+                        <td><input type="text" id="txt3_1" class="txt" /></td>
+                        <td><input type="text" id="txt3_2" class="txt" /></td>
+                        <td><input type="text" id="txt3_3" class="txt" /></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="txt4">나이</label></th>
+                        <td><input type="text" id="txt4" class="txt" /></td>
+                        <th scope="row"><label for="txt5">1+1은?</label></th>
+                        <td><input type="text" id="txt5" class="txt" /></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="txt6">여러분의 고민<br />(고민이 무엇인가요)</label></th>
+                        <td colspan="3" class="lt">
+                            <textarea rows="3" cols="100"></textarea>
+                            <p class="txt01">* 고민은 고해성사 하듯 정성껏 써주세요~ 헤헤</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="tit02">
+                <h2>2.설문조사</h2>
+                <dl>
+                    <dt>* 설문을 작성하신 당신! 체크박스를 눌러요</dt>
+                    <dd>
+                        <input type="checkbox" id="chktit1" class="chk" />
+                        <label for="chktit1">난 남자</label>
+                    </dd>
+                    <dd>
+                        <input type="checkbox" id="chktit2" class="chk" />
+                        <label for="chktit2">난 여자</label>
+                    </dd>
+                    <dd>
+                        <input type="checkbox" id="chktit3" class="chk" />
+                        <label for="chktit3">난 외계인</label>
+                    </dd>
+                    <dd>
+                        <input type="checkbox" id="chktit4" class="chk" />
+                        <label for="chktit4">난 천재</label>
+                    </dd>
+                    <dd>
+                        <input type="checkbox" id="chktit5" class="chk" />
+                        <label for="chktit5">기타:(<input type="text"  class="txt" />)</label>
+                    </dd>
+                </dl>
+            </div>
+            <table class="tbl_type02 tbl_chk">
+                <caption>이 새미나가 당신에게 얼마나 유용했는가!</caption>
+                <colgroup>
+                    <col width="7%" />
+                    <col width="58%" />
+                    <col width="7%" />
+                    <col width="7%" />
+                    <col width="7%" />
+                    <col width="7%" />
+                    <col width="7%" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th scope="col">번호</th>
+                        <th scope="col">설문 문항</th>
+                        <th scope="col" class="np"><span>매우<br />그렇다</span>(1점)</th>
+                        <th scope="col" class="np"><span class="one">초큼<br /> 그렇다</span>(2점)</th>
+                        <th scope="col" class="np"><span class="one">그렇다</span>(3점)</th>
+                        <th scope="col" class="np"><span class="one">그러할까</span>(4점)</th>
+                        <th scope="col" class="np"><span class="one">그러하다</span>(5점)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td class="lt"><label for="chktit1">난 이새미나가 필요하다고 생각한다.</label></td>
+                        <td><input type="radio" id="rdotit1_1" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit1_2" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit1_3" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit1_4" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit1_5" class="rdo" /></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td class="lt"><label for="rdotit2">난 이 새미나에 만족한다.</label></td>
+                        <td><input type="radio" id="rdotit2_1" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit2_2" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit2_3" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit2_4" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit2_5" class="rdo" /></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td class="lt"><label for="rdotit3">난 이 새미나 접근 방법에 만족한다.</label></td>
+                        <td><input type="radio" id="rdotit3_1" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit3_2" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit3_3" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit3_4" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit3_5" class="rdo" /></td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td class="lt"><label for="rdotit4">새미나 시간이 적절하다.</label></td>
+                        <td><input type="radio" id="rdotit4_1" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit4_2" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit4_3" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit4_4" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit4_5" class="rdo" /></td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td class="lt"><label for="rdotit5">새미나가 나에게 적합하다.</label></td>
+                        <td><input type="radio" id="rdotit5_1" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit5_2" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit5_3" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit5_4" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit5_5" class="rdo" /></td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td class="lt"><label for="rdotit6">새미나를 알게되어 유익했다.</label></td>
+                        <td><input type="radio" id="rdotit6_1" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit6_2" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit6_3" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit6_4" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit6_5" class="rdo" /></td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td class="lt"><label for="rdotit7">새미나 내용이 이해하기 쉽게 구성되어 있다.</label></td>
+                        <td><input type="radio" id="rdotit7_1" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit7_2" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit7_3" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit7_4" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit7_5" class="rdo" /></td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td class="lt"><label for="rdotit8">새미나 내용이 실 생활에 도움이 된다고 생각한다.</label></td>
+                        <td><input type="radio" id="rdotit8_1" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit8_2" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit8_3" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit8_4" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit8_5" class="rdo" /></td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td class="lt"><label for="rdotit9">새미나를 듣고 나를 위해 노력할 계획이다.</label></td>
+                        <td><input type="radio" id="rdotit9_1" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit9_2" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit9_3" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit9_4" class="rdo" /></td>
+                        <td><input type="radio" id="rdotit9_5" class="rdo" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7" class="form">
+                            <label for="chktit10">기타 건의사항</label>
+                            <div><textarea rows="4" cols="120"></textarea></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="popbtn">
+            <a href="#" class="btn">저장하기</a>
+        </div>
+    </div>
+    <!-- 제이쿼리 기본라이브러리는 공통 사용파일이 있을듯 하여 엘톡경로로 우선 기입 -->
+    <script type="text/javascript" src="http://ltalk.lotte.net/_layouts/15/CPS.Common/Jquery-1.7.1.min.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $(".pop_wrapper .btn_info").click(function(){
+                if($(this).next(".infobox").css("display") == "none"){
+                    $(".pop_wrapper .infobox").show();
+                } else {
+                    $(".pop_wrapper .infobox").hide();
+                }
+                return false;
+            });
+            $(".pop_wrapper .infobox .btn").click(function(){
+                $(".pop_wrapper .infobox").hide();
+                return false;
+            });
+        });
+    </script>
+</body>
+</html>
