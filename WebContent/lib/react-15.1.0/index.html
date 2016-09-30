@@ -28,6 +28,50 @@ console.log(test2.getInfo());
 
 // 글자를 출력하다 지정된 너비(width)를 넘어가면 줄여서 표시하게된다
 // max-width: 100px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+
+// 클로저(closure) : 이미 생명주기가 끝난 외부함수의 변수를 참조하는 함수
+function outer(){
+	var name = 'test';// 자유변수
+	// 클로저
+	var f = function(){
+		console.log(name);
+	}
+	return f;
+}
+var inner = outer();
+/*
+ * outer()의 실행 컨텍스트가 끝났습니다.
+ */
+ inner();//'test'
+ 
+ // outer()의 실행 컨텍스트는사라졌지만 outer()의 활성 객체는 inner의 스코프체인으로 참조되어있다.
+ // http://boycoding.tistory.com/30
+ /*
+ 클로저 주의사항
+ -클로저는 항상 외부함수의 변수에 마지막으로 저장된 값만 알 수 있다.
+ -클로저가 특정 변수가 아니라 전체 변수 객체에 대해 참조를 저장하기 때문이다.
+ */
+ /* 블록스코프
+	익명함수 안에서 정의한 변수는 익명함수가 실행을 마치는 즉시 파괴되므로 변수 i도
+ 	루프 안에서 사용한 후 파괴된다.
+ 	익명함수는 클로저여서 외부 스코프 변수에 자유로이 접근할 수 있으므로 count변수 역시 익명 함수 안에서 접근이 가능하다.
+ 	이런 패턴은 전역 스코프에 추가되는 변수나 함수의 수를 제한하는 용도로 자주 쓰임
+ 	
+ 	일반적으로 전역 스코프에 변수나 함수를 추가하지 않는 편이 좋으며 여러 개발자들이 협업할때 이를 꼭 지켜야 충돌을 막을 수 있다.
+ 	또한 익명함수에 대한 참조가 존재하지 않으므로 클로저의 메모리 문제도 덜한다.
+ 	참조가 존재하지 않으므로 함수 실행을 마치는 즉시 스코프체인을 파괴하여 메모리를 회수할 수 있기 때문이다.
+ */
+ 
+ function outNumber(count){
+	(function(){
+		for(var i=0; i<count; i++){
+			console.log(i);
+		}	
+	})();
+	
+	console.log(i); // error ( i is not defined...)
+ }
+ 
 </script>
 </head>
 <body>
