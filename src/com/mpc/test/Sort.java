@@ -8,8 +8,6 @@ import java.util.Comparator;
 public class Sort {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
 		ArrayList<String> list = new ArrayList<String>();
 		for(int i=0; i<10; i++){
 			list.add(String.valueOf(i));	
