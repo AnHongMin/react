@@ -20,6 +20,11 @@ public class PostImpl implements PostService {
 		data = (ArrayList)postDao.getList();
 		return data;
 	}
+
+	public PostDto getPost(PostDto dto) throws Exception {
+		PostDto data = postDao.getPost(dto);
+		return data;
+	}
 	
 	public void insertPost(PostDto dto) throws Exception {
 		postDao.insertPost(dto);

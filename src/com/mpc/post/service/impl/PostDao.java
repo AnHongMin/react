@@ -20,6 +20,10 @@ public class PostDao {
 		return commonSqlSession.selectList("Post.getList", null);
 	}
 	
+	public PostDto getPost(PostDto dto) throws SQLException {
+		return commonSqlSession.selectOne("Post.getPost", dto);
+	}
+	
 	public void insertPost(PostDto dto) throws SQLException {
 		commonSqlSession.insert("Post.insertPost", dto);
 	}

@@ -15,6 +15,16 @@
 	  	FROM TEST
 	</select>
 	
+	<select id="getPost" parameterType="com.mpc.post.service.PostDto" resultType="com.mpc.post.service.PostDto">
+		SELECT
+			A as userId
+  			,B as id
+  			,C as title
+  			,D as body
+	  	FROM TEST
+	  	WHERE B = #{id} 
+	</select>
+	
 	<insert id="insertPost" parameterType="com.mpc.post.service.PostDto">
 		INSERT INTO TEST
 		( A, B, C, D )

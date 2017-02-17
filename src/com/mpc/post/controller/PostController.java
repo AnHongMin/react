@@ -27,6 +27,11 @@ public class PostController extends DispatchAction {
 		ajaxResponseJson(req, res, JSONUtil.toJSON(postImpl.getList()));		
 	}
 	
+	@RequestMapping(value="/post.do", params="method=getPost")	
+	public void getPost(@ModelAttribute("dto")PostDto dto, HttpServletRequest req, HttpServletResponse res) throws Exception {		
+		ajaxResponseJson(req, res, JSONUtil.toJSON(postImpl.getPost(dto)));		
+	}
+	
 	@RequestMapping(value="/post.do", params="method=insertPost")	
 	public void insertPost(@ModelAttribute("dto")PostDto dto, HttpServletRequest req, HttpServletResponse res) throws Exception {
 		JSONObject node = new JSONObject();
