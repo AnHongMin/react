@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="CsContactLog">
+
+
+	<select id="getList" parameterType="com.mpc.csContactLog.service.CsContactLogVo"
+		resultType="com.mpc.csContactLog.service.CsContactLogDto">
+		SELECT
+			ORDER_V1,
+			contactlog_id,
+			contact_dt,
+			contactstart_tt,
+			usernm,
+			telcontact,
+			channel,
+			telcust_nm,
+			lang,
+			DIALRESULT,
+			UPTYPE,
+			MIDTYPE,
+			DETAILTYPE,
+			goods_gb,
+			content,
+			conn_branch_id,
+			conn_brand_id,
+			STATUS,
+			BRANCH_GB
+		FROM
+		(
+			select
+				contactlog_id,
+				contact_dt,
+				contactstart_tt,
+				getusernm(contactagent_id) as usernm,
+				telcontact,
+				decode(channel_cd,'INBOUND','수신','OUTBOUND','발신', channel_cd) as channel,
+				telcust_nm,
+				getcode('CS064', custrelation_cd) as lang,
+				GETCODE('CT001',dialresult_cd) AS DIALRESULT,
+				GETCODE('CS003',contact_uptype_cd) AS UPTYPE,
+				GETCODE('CS004',contact_midtype_cd) AS MIDTYPE,
+				GETCODE('CS005',contact_detailtype_cd) AS DETAILTYPE,
+				GETCODE('CS011',goods_gb) AS goods_gb,
+				content,
+				conn_branch_id,
+				conn_brand_id,
+				GETCODE('CS063',conn_status) AS STATUS,
+				GETCODE('CS012',BRANCH_GB) AS BRANCH_GB,
+				1 AS ORDER_V1
+			from cs_contactlog
+			where contact_dt between #{start_dt} and #{end_dt}
+			and team_cd like 'IN1%'
+			
+			union all
+		
+		select
+			contactlog_id,
+			contact_dt,
+			contactstart_tt,
+			getusernm(contactagent_id) as usernm,
+			telcontact,
+			decode(channel_cd,'INBOUND','수신','OUTBOUND','발신', channel_cd) as channel,
+			telcust_nm,
+			getcode('CS064', custrelation_cd) as lang,
+			GETCODE('CT001',dialresult_cd) AS DIALRESULT,
+			GETCODE('CS003',contact_uptype_cd2) AS UPTYPE,
+			GETCODE('CS004',contact_midtype_cd2) AS MIDTYPE,
+			GETCODE('CS005',contact_detailtype_cd2) AS DETAILTYPE,
+			GETCODE('CS011',goods_gb) AS goods_gb,
+			content,
+			conn_branch_id,
+			conn_brand_id,
+			GETCODE('CS063',conn_status) AS STATUS,
+			GETCODE('CS012',BRANCH_GB) AS BRANCH_GB,
+			2 AS ORDER_V1
+		from cs_contactlog
+		where contact_dt between #{start_dt} and #{end_dt}
+		and team_cd like 'IN1%'
+		and contact_detailtype_cd2 is not null
+		
+		)
+		ORDER BY CONTACT_DT DESC, CONTACTSTART_TT DESC, contactlog_id DESC,
+		ORDER_V1 ASC
+	</select>
+
+</mapper>

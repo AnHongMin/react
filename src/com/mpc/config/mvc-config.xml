@@ -12,9 +12,20 @@
 						http://www.springframework.org/schema/context
 						http://www.springframework.org/schema/context/spring-context.xsd">
 
-	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+
+	<bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<description>beanName view resolver 설정</description>
+		<property name="order" value="0" />
+	</bean>
+
+
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<description>basic view resolver 설정</description>
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/view/" />
 		<property name="suffix" value=".jsp" />
+		<property name="order" value="1" />
+		<property name="contentType" value="text/html; charset=UTF-8" />
 	</bean>
 
 	<context:component-scan base-package="com.mpc.*">
