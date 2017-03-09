@@ -8,41 +8,41 @@
 	
 	<select id="getList" resultType="com.mpc.post.service.PostDto">
 		SELECT
-			A as userId
-  			,B as id
-  			,C as title
-  			,D as body
-	  	FROM TEST
+			id
+			,userId
+  			,title
+  			,body
+	  	FROM TB_TEST
 	</select>
 	
 	<select id="getPost" parameterType="com.mpc.post.service.PostDto" resultType="com.mpc.post.service.PostDto">
 		SELECT
-			A as userId
-  			,B as id
-  			,C as title
-  			,D as body
-	  	FROM TEST
+			id
+  			,userId
+  			,title
+  			,body
+	  	FROM TB_TEST
 	  	WHERE B = #{id} 
 	</select>
 	
 	<insert id="insertPost" parameterType="com.mpc.post.service.PostDto">
-		INSERT INTO TEST
-		( A, B, C, D )
+		INSERT INTO TB_TEST
+		( id, userId, title, body )
 		VALUES
-		( #{userId}, #{id}, #{title}, #{body} )
+		( #{id}, #{userId}, #{title}, #{body} )
 	</insert>
 	
 	<update id="updatePost" parameterType="com.mpc.post.service.PostDto">
-		UPDATE TEST
-		SET A = #{userId}
-		, C = #{title}
-		, D = #{body}		
-		WHERE B = #{id}		
+		UPDATE TB_TEST
+		SET userId = #{userId}
+		, title = #{title}
+		, body = #{body}		
+		WHERE id = #{id}		
 	</update>	
 	
 	<delete id="deletePost" parameterType="com.mpc.post.service.PostDto">
-		DELETE FROM TEST
-		WHERE B = #{id}		
+		DELETE FROM TB_TEST
+		WHERE id = #{id}		
 	</delete>
 	
 </mapper>
